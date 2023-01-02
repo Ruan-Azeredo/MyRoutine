@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div>
       <Layout>
-        <div>
+        <div className='m-4'>
           {activities.map((activitie) => (
             <CardActivitie key={activitie} activitie={activitie} />
           ))}
