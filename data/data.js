@@ -6,6 +6,8 @@ const testLinkedin = { name: 'Teste linkedin', pts: 1 }
 export const activities = [
   { year: 2023, month: 1, day: 1, type: postLinkedin.name, pts: postLinkedin.pts, desc: 'Postei no linkedin MyBooks' },
   { year: 2023, month: 1, day: 1, type: testLinkedin.name, pts: testLinkedin.pts, desc: 'Teste de JavaScript' },
+  { year: 2023, month: 1, day: 2, type: testLinkedin.name, pts: testLinkedin.pts, desc: 'Teste de Front End' },
+  { year: 2023, month: 1, day: 2, type: testLinkedin.name, pts: testLinkedin.pts, desc: 'Teste de HTML' },
 ]
 
 export const activitiesByDay = activities.reduce((days, activity) => {
