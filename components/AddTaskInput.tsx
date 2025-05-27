@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react'
 import useTasksData from '../hooks/useTasksData'
 import { TaskInterface } from '../types/task'

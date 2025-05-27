@@ -1,8 +1,10 @@
+'use client'
+
 import React, { useState } from 'react'
 import { TaskInterface } from '../types/task'
 import useTasksData from '../hooks/useTasksData'
 import AddTaskInput from './AddTaskInput'
-import { ArrowDown01Icon, ChevronDown, ChevronUp, TagIcon, Trash2Icon, TrashIcon } from 'lucide-react'
+import { ChevronDown, ChevronUp, TagIcon, Trash2Icon } from 'lucide-react'
 
 const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) => {
 

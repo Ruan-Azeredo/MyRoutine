@@ -1,3 +1,5 @@
+'use client'
+
 import { TaskInterface, TaskProps } from "../types/task";
 import { useDispatch } from "react-redux";
 import { addTask, deleteTask, updateTask } from "../store/reducers/data";

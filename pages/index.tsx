@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import Task from "../components/Task";
 import { useAppSelector } from "../hooks/useAppSelector";
