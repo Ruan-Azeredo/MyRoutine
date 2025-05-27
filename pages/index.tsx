@@ -48,7 +48,9 @@ export default function Home() {
 					</label>
 					<AddTaskInput />
 					{tasks.map((task, index) => (
-						<Task task={task} key={index}/>
+						<div key={index}>
+							<Task task={task}/>
+						</div>
 					))}
 				</div>
 			</div>
