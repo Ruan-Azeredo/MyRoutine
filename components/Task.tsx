@@ -65,8 +65,8 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                     </div>
                 </div>
                 <div className="gap-2 flex flex-col ml-2">
-                    {task.tags.map(tag => (
-                        <div className='flex gap-1'>
+                    {task.tags.map((tag, index) => (
+                        <div className='flex gap-1' key={index}>
                             <span className="inline-flex items-center gap-x-0.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
                                 {tag}
                                 <button onClick={() => useTask.delete_tag(task, tag, father)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">

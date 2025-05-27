@@ -47,8 +47,8 @@ export default function Home() {
 						Adicionar Nova Task
 					</label>
 					<AddTaskInput />
-					{tasks.map(task => (
-						<Task task={task} />
+					{tasks.map((task, index) => (
+						<Task task={task} key={index}/>
 					))}
 				</div>
 			</div>
