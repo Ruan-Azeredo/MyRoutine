@@ -81,8 +81,8 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                     ))}
                 </div>
             </div>
-            {showChildren && task.child?.map(child => (
-                <div className='ml-16 mt-1'>
+            {showChildren && task.child?.map((child, item) => (
+                <div className='ml-16 mt-1' key={item}>
                     <Task task={child} father={task}/>
                 </div>
             ))}
