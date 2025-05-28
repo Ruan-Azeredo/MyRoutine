@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TaskInterface, TaskProps } from "../../types/task"
-import crypto from "crypto"
+import { v4 as uuidv4 } from 'uuid';
 
 interface DataState {
     tasks: TaskInterface[]
@@ -9,7 +9,7 @@ interface DataState {
 const initialState: DataState = {
     tasks: [
         {   
-            id: crypto.randomUUID(),
+            id: uuidv4(),
             title: 'Assinar contrato Talqui',
             description: 'https://mail.google.com/mail/u/0/?ogbl#inbox',
             date: null,
@@ -18,7 +18,7 @@ const initialState: DataState = {
             tags: ['talqui', 'dev'],
             priority: null,
             child: [{
-                id: crypto.randomUUID(),
+                id: uuidv4(),
                 title: 'verificar email',
                 description: 'https://mail.google.com/mail/u/0/?ogbl#inbox',
                 date: null,
@@ -40,7 +40,7 @@ export const dataSlice = createSlice({
             state.tasks = action.payload
         },
         addTask: (state, action: PayloadAction<{task: TaskProps, father?: TaskInterface}>) => {
-            const task: TaskInterface = { ...action.payload.task, id: crypto.randomUUID() }
+            const task: TaskInterface = { ...action.payload.task, id: uuidv4() }
             if (action.payload.father) {
                 const addChildTask = (tasks: TaskInterface[], fatherId: string, taskToAdd: TaskInterface): boolean => {
                     for (const task of tasks) {
