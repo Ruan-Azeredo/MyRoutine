@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Task from "../components/Task";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { useDispatch } from "react-redux";
-import { searchTasks } from "../store/reducers/data";
+import { searchTasks, setTasks } from "../store/reducers/data";
 import AddTaskInput from "../components/AddTaskInput";
 import { login } from "../store/reducers/auth";
 
@@ -17,7 +17,20 @@ export default function Home() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 
-	return isAuthenticated ? (
+	useEffect(() => {
+		const fetchTasks = async () => {
+			try {
+				const resp = await fetch("/api/tasks");
+				const data = await resp.json();
+				dispatch(setTasks(data));
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		fetchTasks();
+	}, [])
+
+	return true ? (
 		<div className="flex h-screen">
 			<div className="bg-white m-4 w-full rounded-xl p-4">
 				<div className="w-full lg:w-1/2 ml-auto">
