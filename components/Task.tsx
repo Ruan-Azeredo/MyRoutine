@@ -12,44 +12,54 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
 
     const [newTag, setNewTag] = useState("")
     const [showAddTagInput, setShowAddTagInput] = useState(false)
-    const [showChildren, setShowChildren] = useState(true)
-
-    console.log(task.child)
+    const [showChildren, setShowChildren] = useState(false)
+    const [showDescription, setShowDescription] = useState(false)
 
     return (
-        <div className='mb-3'>
+        <div className={`mb-3 ${task.completed ? 'opacity-25' : ''}`}>
             <div className="flex text-gray-900 w-full">
-                <div>
-                    <button onClick={() => setShowAddTagInput(!showAddTagInput)} className='bg-gray-900 text-gray-100 h-8 mt-2 px-1 rounded-l-md'>+</button>
-                </div>
                 <div className='w-full'>
-                    <div className="shadow-sm ring-1 ring-inset ring-gray-300 rounded-md flex justify-between w-full h-fit">
-                        <input
-                            id="select-all"
-                            name="select-all"
-                            type="checkbox"
-                            onChange={() => useTask.toggle_task(task, father)}
-                            className="h-4 w-4 my-auto ml-4 mr-2 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <div className='w-full my-2'>
-                            <input
-                                type="text"
-                                className="text-sm bg-transparent w-full flex border-0 focus:outline-none px-1 py-0"
-                                value={task.title}
-                                onChange={(e) => useTask.update_task({...task, title: e.target.value}, father)}
-                            />
-                            <textarea
-                                className="text-xs text-gray-400 bg-transparent w-full flex border-0 focus:outline-none resize-none h-5 px-1 py-0"
-                                value={task.description}
-                                onChange={(e) => useTask.update_task({...task, description: e.target.value}, father)}
-                            />
+                    <div className='flex'>
+                        <div>
+                            <button onClick={() => setShowAddTagInput(!showAddTagInput)} className='bg-gray-900 text-gray-100 h-full px-1 rounded-l-md'>+</button>
                         </div>
+                        <div className="shadow-sm ring-1 ring-inset ring-gray-300 rounded-r-md flex justify-between w-full h-fit">
+                            <input
+                                id="select-all"
+                                name="select-all"
+                                type="checkbox"
+                                checked={task.completed}
+                                onChange={() => useTask.toggle_task(task, father)}
+                                className="h-4 w-4 my-auto ml-4 mr-2 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                            />
+                            <div className='w-full my-2'>
+                                <div className='flex'>
+                                    {/* <button onClick={() => setShowDescription(!showDescription)}>
+                                        {showDescription ? <ChevronUp className='w-4 h-4'/> : <ChevronDown className='w-4 h-4'/>}
+                                    </button> */}
+                                    <input
+                                        type="text"
+                                        className="text-sm bg-transparent flex border-0 focus:outline-none px-1 py-0"
+                                        value={task.title}
+                                        onChange={(e) => useTask.update_task({...task, title: e.target.value}, father)}
+                                    />
+                                </div>
+                                <textarea
+                                    className={`text-xs text-gray-400 bg-transparent w-full flex border-0 focus:outline-none resize-none h-5 px-1 py-0 ${showDescription ? 'block' : 'hidden'}`}
+                                    value={task.description}
+                                    onChange={(e) => useTask.update_task({...task, description: e.target.value}, father)}
+                                />
+                            </div>
                         <div className='flex mr-4 gap-2'>
                             <button onClick={() => useTask.delete_task(task, father)} className="my-auto"><Trash2Icon className='h-[14px] w-[14px]'/></button>
-                            <button className={task.child?.length > 0 ? 'block' : 'hidden'} onClick={() => setShowChildren(!showChildren)}>
+                            <button onClick={() => {
+                                setShowChildren(!showChildren)
+                                setShowDescription(!showDescription)
+                                }}>
                                 {showChildren ? <ChevronUp className='w-4 h-4'/> : <ChevronDown className='w-4 h-4'/>}
                             </button>
                         </div>
+                    </div>
                     </div>
                     <div className={`mt-2 relative flex flex-grow items-stretch focus-within:z-10 ${showAddTagInput ? 'flex' : 'hidden'}`}>
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
