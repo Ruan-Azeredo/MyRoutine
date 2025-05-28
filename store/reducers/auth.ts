@@ -12,9 +12,9 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        login: (state, action: PayloadAction<{user: string, password: string}>) => {
+        login: (state, action: PayloadAction<{email: string, password: string}>) => {
             if(
-                process.env.NEXT_PUBLIC_EMAIL === action.payload.user &&
+                process.env.NEXT_PUBLIC_EMAIL === action.payload.email &&
                 process.env.NEXT_PUBLIC_PASSWORD === action.payload.password
             ){
                 state.isAuthenticated = true
