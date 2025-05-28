@@ -2,7 +2,7 @@
 
 import { TaskInterface, TaskProps } from "../types/task";
 import { useDispatch } from "react-redux";
-import { addTask, deleteTask, updateTask } from "../store/reducers/data";
+import { addTask, deleteTask, toggleTask, updateTask } from "../store/reducers/data";
 
 const useTasksData = () => {
 
@@ -32,7 +32,7 @@ const useTasksData = () => {
 
     const toggle_task = (task: TaskInterface, father?: TaskInterface) => {
         const updatedTask = { ...task, completed: !task.completed };
-        update_task(updatedTask, father);
+        dispatch(toggleTask({task: updatedTask, father: father}))
     }
 
     return { add_task, update_task, delete_task, add_tag, delete_tag, toggle_task }

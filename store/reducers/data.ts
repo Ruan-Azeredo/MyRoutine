@@ -15,7 +15,7 @@ const initialState: DataState = {
             date: null,
             completed_date: null,
             completed: false,
-            tags: ['talqui', 'dev'],
+            tags: ['talqui'],
             priority: null,
             child: [{
                 id: uuidv4(),
@@ -24,7 +24,7 @@ const initialState: DataState = {
                 date: null,
                 completed_date: null,
                 completed: false,
-                tags: ['talqui', 'dev'],
+                tags: ['talqui'],
                 priority: null,
                 child: null
             }]
@@ -106,6 +106,21 @@ export const dataSlice = createSlice({
                 }
             }
         },
+        toggleTask: (state, action: PayloadAction<{task: TaskInterface, father?: TaskInterface}>) => {
+            dataSlice.caseReducers.updateTask(state, {
+                payload: {
+                    task: action.payload.task,
+                    father: action.payload.father
+                },
+                type: 'data/updateTask'
+            })
+            // put task in the end f the array
+            // const taskIndex = state.tasks.findIndex(task => task.id === action.payload.task.id)
+            // if (taskIndex !== -1) {
+            //     const [task] = state.tasks.splice(taskIndex, 1);
+            //     state.tasks.push(task);
+            // }
+        },
         searchTasks: (state, action: PayloadAction<string>) => {
             if(action.payload.trim() === '') {
                 state.tasks = initialState.tasks
@@ -121,5 +136,5 @@ export const dataSlice = createSlice({
     }
 })
 
-export const { setTasks, addTask, deleteTask, updateTask, searchTasks } = dataSlice.actions
+export const { setTasks, addTask, deleteTask, updateTask, toggleTask, searchTasks } = dataSlice.actions
 export default dataSlice.reducer
