@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TaskInterface, TaskProps } from "../../types/task"
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uucustomIdv4 } from 'uuid';
 
 interface DataState {
     tasks: TaskInterface[]
@@ -9,7 +9,7 @@ interface DataState {
 const initialState: DataState = {
     tasks: [
         {   
-            id: uuidv4(),
+            customId: uucustomIdv4(),
             title: 'Assinar contrato Talqui',
             description: 'https://mail.google.com/mail/u/0/?ogbl#inbox',
             date: null,
@@ -18,7 +18,7 @@ const initialState: DataState = {
             tags: ['talqui'],
             priority: null,
             child: [{
-                id: uuidv4(),
+                customId: uucustomIdv4(),
                 title: 'verificar email',
                 description: 'https://mail.google.com/mail/u/0/?ogbl#inbox',
                 date: null,
@@ -39,12 +39,12 @@ export const dataSlice = createSlice({
         setTasks: (state, action: PayloadAction<TaskInterface[]>) => {
             state.tasks = action.payload
         },
-        addTask: (state, action: PayloadAction<{task: TaskProps, father?: TaskInterface}>) => {
-            const task: TaskInterface = { ...action.payload.task, id: uuidv4() }
+        addTask: (state, action: PayloadAction<{task: TaskInterface, father?: TaskInterface}>) => {
+            const task: TaskInterface = action.payload.task
             if (action.payload.father) {
                 const addChildTask = (tasks: TaskInterface[], fatherId: string, taskToAdd: TaskInterface): boolean => {
                     for (const task of tasks) {
-                        if (task.id === fatherId) {
+                        if (task.customId === fatherId) {
                             task.child = [...(task.child || []), taskToAdd];
                             return true;
                         }
@@ -55,7 +55,7 @@ export const dataSlice = createSlice({
                     return false;
                 };
 
-                addChildTask(state.tasks, action.payload.father.id, task);
+                addChildTask(state.tasks, action.payload.father.customId, task);
             } else {
                 state.tasks.push(task)
             }
@@ -64,8 +64,8 @@ export const dataSlice = createSlice({
             if (action.payload.father) {
                 const removeChildTask = (tasks: TaskInterface[], fatherId: string, taskIdToRemove: string): boolean => {
                     for (const task of tasks) {
-                        if (task.id === fatherId) {
-                            task.child = task.child?.filter(child => child.id !== taskIdToRemove) || [];
+                        if (task.customId === fatherId) {
+                            task.child = task.child?.filter(child => child.customId !== taskIdToRemove) || [];
                             return true;
                         }
                         if (task.child && removeChildTask(task.child, fatherId, taskIdToRemove)) {
@@ -75,17 +75,17 @@ export const dataSlice = createSlice({
                     return false;
                 };
 
-                removeChildTask(state.tasks, action.payload.father.id, action.payload.task.id);
+                removeChildTask(state.tasks, action.payload.father.customId, action.payload.task.customId);
             } else {
-                state.tasks = state.tasks.filter(task => task.id !== action.payload.task.id)
+                state.tasks = state.tasks.filter(task => task.customId !== action.payload.task.customId)
             }
         },
         updateTask: (state, action: PayloadAction<{task: TaskInterface, father?: TaskInterface}>) => {
             if (action.payload.father) {
                 const updateChildTask = (tasks: TaskInterface[], fatherId: string, taskToUpdate: TaskInterface): boolean => {
                     for (const task of tasks) {
-                        if (task.id === fatherId) {
-                            const childIndex = task.child?.findIndex(child => child.id === taskToUpdate.id);
+                        if (task.customId === fatherId) {
+                            const childIndex = task.child?.findIndex(child => child.customId === taskToUpdate.customId);
                             if (childIndex !== undefined && childIndex !== -1) {
                                 task.child![childIndex] = taskToUpdate;
                                 return true;
@@ -98,9 +98,9 @@ export const dataSlice = createSlice({
                     return false;
                 };
 
-                updateChildTask(state.tasks, action.payload.father.id, action.payload.task);
+                updateChildTask(state.tasks, action.payload.father.customId, action.payload.task);
             } else {
-                const taskIndex = state.tasks.findIndex(task => task.id === action.payload.task.id)
+                const taskIndex = state.tasks.findIndex(task => task.customId === action.payload.task.customId)
                 if (taskIndex !== -1) {
                     state.tasks[taskIndex] = action.payload.task
                 }
@@ -115,7 +115,7 @@ export const dataSlice = createSlice({
                 type: 'data/updateTask'
             })
             // put task in the end f the array
-            // const taskIndex = state.tasks.findIndex(task => task.id === action.payload.task.id)
+            // const taskIndex = state.tasks.findIndex(task => task.customId === action.payload.task.customId)
             // if (taskIndex !== -1) {
             //     const [task] = state.tasks.splice(taskIndex, 1);
             //     state.tasks.push(task);
