@@ -1,5 +1,5 @@
 export interface TaskInterface {
-    id: string
+    customId: string
 	title: string
 	description: string | null
 	date: number | null
