@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const TaskSchema = new Schema({
-    id: { type: String, required: true },
+    customId: { type: String, required: true, unique: true },
     title: { type: String, required: true },
     date: { type: Number },
     completed_date: { type: Number },
