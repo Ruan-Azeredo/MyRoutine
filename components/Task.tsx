@@ -39,7 +39,7 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                                     </button> */}
                                     <input
                                         type="text"
-                                        className="text-sm bg-transparent flex border-0 focus:outline-none px-1 py-0"
+                                        className="text-sm w-full bg-transparent flex border-0 focus:outline-none px-1 py-0"
                                         value={task.title}
                                         onChange={(e) => useTask.update_task({...task, title: e.target.value}, father)}
                                     />
