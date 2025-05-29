@@ -14,12 +14,13 @@ const useTasksData = () => {
             const res = await fetch("/api/tasks", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({...task, id: uuidv4()}),
+                body: JSON.stringify({...task, customId: uuidv4()}),
             });
 
             if (!res.ok) throw new Error("Erro ao criar tarefa");
 
             const newTask = await res.json();
+            console.log("Nova tarefa adicionada:", newTask);
             dispatch(addTask({ task: newTask, father }));
         } catch (err) {
             console.error("Erro ao adicionar tarefa:", err);
@@ -28,7 +29,7 @@ const useTasksData = () => {
 
     const update_task = async (task: TaskInterface, father?: TaskInterface) => {
         try {
-            const res = await fetch(`/api/tasks/${task.id}`, {
+            const res = await fetch(`/api/tasks/${task.customId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(task),
@@ -44,8 +45,9 @@ const useTasksData = () => {
     };
 
     const delete_task = async (task: TaskInterface, father?: TaskInterface) => {
+        console.log("Deleting task:", task, "Father:", father ? father.customId : "None");
         try {
-            const res = await fetch(`/api/tasks/${task.id}`, {
+            const res = await fetch(`/api/tasks/${task.customId}`, {
                 method: "DELETE",
             });
 
