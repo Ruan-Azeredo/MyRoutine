@@ -6,8 +6,9 @@ const TaskSchema = new Schema({
     date: { type: Number },
     completed_date: { type: Number },
     completed: { type: Boolean, default: false },
-    tags: { type: [String] },
-    child: { type: Schema.Types.Mixed }
+    tags: { type: [String], default: [] },
+    child: { type: Schema.Types.Mixed } // pode ser ajustado se souber o formato exato
 }, { timestamps: true });
 
-export default mongoose.models.Task || mongoose.model("Task", TaskSchema);
+// Previne recriação do modelo em hot-reload no dev
+export default mongoose.models.Task || mongoose.model("Task", TaskSchema) as mongoose.Model<any>
