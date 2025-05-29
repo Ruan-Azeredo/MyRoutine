@@ -23,6 +23,7 @@ export default function Home() {
 				const resp = await fetch("/api/tasks");
 				const data = await resp.json();
 				dispatch(setTasks(data));
+				console.log("Tasks fetched successfully:", data);
 			} catch (err) {
 				console.log(err);
 			}
@@ -30,8 +31,8 @@ export default function Home() {
 		fetchTasks();
 	}, [])
 
-	return true ? (
-		<div className="flex h-screen">
+	return isAuthenticated ? (
+		<div className="flex min-h-screen">
 			<div className="bg-white m-4 w-full rounded-xl p-4">
 				<div className="w-full lg:w-1/2 ml-auto">
 					<div className="mb-4">
