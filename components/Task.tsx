@@ -14,6 +14,8 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
     const [showAddTagInput, setShowAddTagInput] = useState(false)
     const [showChildren, setShowChildren] = useState(false)
     const [showDescription, setShowDescription] = useState(false)
+    const [newTask, setNewTask] = useState<TaskInterface>(task)
+    const [showSaveButton, setShowSaveButton] = useState(false)
 
     return (
         <div className={`mb-3 ${task.completed ? 'opacity-25' : ''}`}>
@@ -40,21 +42,39 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                                     <input
                                         type="text"
                                         className="text-sm w-full bg-transparent flex border-0 focus:outline-none px-1 py-0"
-                                        value={task.title}
-                                        onChange={(e) => useTask.update_task({...task, title: e.target.value}, father)}
+                                        value={newTask.title}
+                                        onChange={(e) => {
+                                            setNewTask({...task, title: e.target.value})
+                                            setShowSaveButton(true)
+                                        }}
                                     />
                                 </div>
                                 <textarea
                                     className={`text-xs text-gray-400 bg-transparent w-full flex border-0 focus:outline-none resize-none h-5 px-1 py-0 ${showDescription ? 'block' : 'hidden'}`}
                                     value={task.description}
-                                    onChange={(e) => useTask.update_task({...task, description: e.target.value}, father)}
+                                    onChange={(e) => {
+                                        setNewTask({...task, description: e.target.value})
+                                        setShowSaveButton(true)
+                                    }}
                                 />
                             </div>
+                        <div className={`${showSaveButton ? 'block' : 'hidden'} flex items-center gap-1 text-sm m-2 px-1 border-[1px] border-gray-900 rounded-md hover:bg-gray-100`}>
+                            <button onClick={() => {
+                                useTask.update_task(newTask, father)
+                            }}>Salvar</button>
+                            <button onClick={() => setShowSaveButton(false)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
+                                    <span className="sr-only">Remove</span>
+                                    <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 stroke-gray-700/50 group-hover:stroke-gray-700/75">
+                                        <path d="M4 4l6 6m0-6l-6 6" />
+                                    </svg>
+                                    <span className="absolute -inset-1" />
+                                </button>
+                        </div>
                         <div className='flex mr-4 gap-2'>
                             <button onClick={() => useTask.delete_task(task, father)} className="my-auto"><Trash2Icon className='h-[14px] w-[14px]'/></button>
                             <button onClick={() => {
-                                setShowChildren(!showChildren)
-                                setShowDescription(!showDescription)
+                                    setShowChildren(!showChildren)
+                                    setShowDescription(!showDescription)
                                 }}>
                                 {showChildren ? <ChevronUp className='w-4 h-4'/> : <ChevronDown className='w-4 h-4'/>}
                             </button>
