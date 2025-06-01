@@ -14,7 +14,10 @@ const useTasksData = () => {
             const res = await fetch("/api/tasks", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({...task, customId: uuidv4()}),
+                body: JSON.stringify({
+                    task: {...task, customId: uuidv4()},
+                    father: father
+                }),
             });
 
             if (!res.ok) throw new Error("Erro ao criar tarefa");
@@ -32,7 +35,10 @@ const useTasksData = () => {
             const res = await fetch(`/api/tasks/${task.customId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(task),
+                body: JSON.stringify({
+                    task: task,
+                    father: father
+                }),
             });
 
             if (!res.ok) throw new Error("Erro ao atualizar tarefa");
@@ -49,6 +55,10 @@ const useTasksData = () => {
         try {
             const res = await fetch(`/api/tasks/${task.customId}`, {
                 method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    father: father
+                }),
             });
 
             if (!res.ok) throw new Error("Erro ao deletar tarefa");
