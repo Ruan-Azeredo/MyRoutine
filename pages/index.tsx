@@ -7,12 +7,16 @@ import { useDispatch } from "react-redux";
 import { searchTasks, setTasks } from "../store/reducers/data";
 import AddTaskInput from "../components/AddTaskInput";
 import { login } from "../store/reducers/auth";
+import { TaskInterface } from "../types/task";
 
 export default function Home() {
 
 	const tasks = useAppSelector((state) => state.data.tasks)
 	const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
 	const dispatch = useDispatch()
+
+	const [filterRule, setFilterRule] = useState("all")
+	const [displayTasks, setDisplayTasks] = useState([])
 
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
@@ -23,13 +27,26 @@ export default function Home() {
 				const resp = await fetch("/api/tasks");
 				const data = await resp.json();
 				dispatch(setTasks(data));
-				console.log("Tasks fetched successfully:", data);
+				console.log("Tasks fetched successfully:", data)
 			} catch (err) {
 				console.log(err);
 			}
 		};
 		fetchTasks();
 	}, [])
+
+	useEffect(() => {
+		switch (filterRule) {
+			case "all":
+				setDisplayTasks(tasks);
+				break;
+			case "notChecked":
+				setDisplayTasks(tasks.filter(task => !task.completed));
+				break;
+			default:
+				setDisplayTasks(tasks);
+		}
+	}, [tasks, filterRule])
 
 	return isAuthenticated ? (
 		<div className="flex min-h-screen">
@@ -68,7 +85,11 @@ export default function Home() {
 						Adicionar Nova Task
 					</label>
 					<AddTaskInput />
-					{tasks.map((task, index) => (
+					<div className="flex w-full py-2 gap-2">
+						<button className="bg-gray-900 py-2 px-4 rounded-md text-xs" onClick={() => setFilterRule('all')}>All</button>
+						<button className="bg-gray-900 py-2 px-4 rounded-md text-xs" onClick={() => setFilterRule('notChecked')}>Not Checked</button>
+					</div>
+					{displayTasks.map((task, index) => (
 						<div key={index}>
 							<Task task={task}/>
 						</div>
