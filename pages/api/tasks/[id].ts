@@ -15,19 +15,61 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     switch (req.method) {
       case "PUT": {
-        const updated = await Task.findOneAndUpdate(
-          { customId: taskId },
-          req.body,
-          { new: true }
-        );
-        if (!updated) return res.status(404).json({ error: "Tarefa não encontrada" });
-        return res.status(200).json(updated);
+        const { father, task } = req.body;
+
+        if (father) {
+          const updateChildTask = async (fatherId: string, taskToUpdate: any): Promise<boolean> => {
+        const parentTask = await Task.findOne({ customId: fatherId });
+        if (parentTask) {
+          const childIndex = parentTask.child?.findIndex((child: any) => child.customId === taskToUpdate.customId);
+          if (childIndex !== undefined && childIndex !== -1) {
+            parentTask.child![childIndex] = taskToUpdate;
+            await parentTask.save();
+            return true;
+          }
+        }
+        return false;
+          };
+
+          const updated = await updateChildTask(father.customId, task);
+          if (!updated) return res.status(404).json({ error: "Tarefa ou pai não encontrado" });
+          return res.status(200).json(task);
+        } else {
+          const updated = await Task.findOneAndUpdate(
+        { customId: task.customId },
+        task,
+        { new: true }
+          );
+          if (!updated) return res.status(404).json({ error: "Tarefa não encontrada" });
+          return res.status(200).json(updated);
+        }
       }
 
       case "DELETE": {
-        const deleted = await Task.findOneAndDelete({ customId: taskId });
-        if (!deleted) return res.status(404).json({ error: "Tarefa não encontrada" });
-        return res.status(204).end();
+        const { father } = req.body;
+        console.log(`Deleting task with customId: ${taskId}, Father: ${father ? father?.customId : "None"}`);
+
+        if (father && father?.customId) {
+          console.log(`Removing child task from father with customId: ${father.customId}`);
+          const removeChildTask = async (fatherId: string, taskIdToRemove: string): Promise<boolean> => {
+            const parentTask = await Task.findOne({ customId: fatherId });
+            if (parentTask) {
+              parentTask.child = parentTask.child?.filter((child: any) => child.customId !== taskIdToRemove) || [];
+              await parentTask.save();
+              return true;
+            }
+            return false;
+          };
+
+          const deleted = await removeChildTask(father?.customId, taskId);
+          if (!deleted) return res.status(404).json({ error: "Tarefa ou pai não encontrado" });
+          return res.status(204).end();
+        } else {
+          console.log(`Deleting task with customId: ${taskId}`);
+          const deleted = await Task.findOneAndDelete({ customId: taskId });
+          if (!deleted) return res.status(404).json({ error: "Tarefa não encontrada" });
+          return res.status(204).end();
+        }
       }
 
       default:
