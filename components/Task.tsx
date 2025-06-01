@@ -5,6 +5,7 @@ import { TaskInterface } from '../types/task'
 import useTasksData from '../hooks/useTasksData'
 import AddTaskInput from './AddTaskInput'
 import { ChevronDown, ChevronUp, TagIcon, Trash2Icon } from 'lucide-react'
+import { tags_imgs } from '../consts/tags'
 
 const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) => {
 
@@ -96,8 +97,8 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                         <AddTaskInput father={task} />
                     </div>
                 </div>
-                <div className="gap-2 flex flex-col ml-2">
-                    {task.tags.map((tag, index) => (
+                <div className="gap-2 flex flex-col">
+                    {/* {task.tags.map((tag, index) => (
                         <div className='flex gap-1' key={index}>
                             <span className="inline-flex items-center gap-x-0.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
                                 {tag}
@@ -109,6 +110,13 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                                     <span className="absolute -inset-1" />
                                 </button>
                             </span>
+                        </div>
+                    ))} */}
+                    {task.tags.map((tag) => (
+                        <div>
+                            {tags_imgs[tag] ? (
+                                <img className='h-9 w-9 object-cover rounded-md ml-2' src={tags_imgs[tag]} alt="tag image" />
+                            ) : <div>{tag}</div>}
                         </div>
                     ))}
                 </div>
