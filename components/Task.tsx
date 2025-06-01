@@ -13,13 +13,13 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
 
     const [newTag, setNewTag] = useState("")
     const [showAddTagInput, setShowAddTagInput] = useState(false)
-    const [showChildren, setShowChildren] = useState(false)
+    const [showChildren, setShowChildren] = useState(true)
     const [showDescription, setShowDescription] = useState(false)
     const [newTask, setNewTask] = useState<TaskInterface>(task)
     const [showSaveButton, setShowSaveButton] = useState(false)
 
     return (
-        <div className={`mb-3 ${task.completed ? 'opacity-25' : ''}`}>
+        <div className={`mb-2 ${task.completed ? 'opacity-25' : ''}`}>
             <div className="flex text-gray-900 w-full">
                 <div className='w-full'>
                     <div className='flex'>
@@ -52,7 +52,7 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                                 </div>
                                 <textarea
                                     className={`text-xs text-gray-400 bg-transparent w-full flex border-0 focus:outline-none resize-none h-5 px-1 py-0 ${showDescription ? 'block' : 'hidden'}`}
-                                    value={task.description}
+                                    value={task.description || ''}
                                     onChange={(e) => {
                                         setNewTask({...task, description: e.target.value})
                                         setShowSaveButton(true)
@@ -122,7 +122,7 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                 </div>
             </div>
             {showChildren && task.child?.map((child, item) => (
-                <div className='ml-16 mt-1' key={item}>
+                <div className='ml-16 mt-2' key={item}>
                     <Task task={child} father={task}/>
                 </div>
             ))}
