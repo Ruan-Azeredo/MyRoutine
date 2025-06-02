@@ -5,7 +5,7 @@ import useTasksData from '../hooks/useTasksData'
 import { TaskInterface } from '../types/task'
 import { SquareCheckBigIcon } from 'lucide-react'
 
-const AddTaskInput = ({father} : {father?: TaskInterface}) => {
+const AddTaskInput = ({father, tags} : {father?: TaskInterface, tags?: string[]}) => {
 
     const taskData = useTasksData()
 
@@ -15,7 +15,7 @@ const AddTaskInput = ({father} : {father?: TaskInterface}) => {
 		date: null,
 		completed_date: null,
 		completed: false,
-		tags: [],
+		tags: tags || [],
 		priority: null,
 		child: null
 	})
@@ -48,7 +48,7 @@ const AddTaskInput = ({father} : {father?: TaskInterface}) => {
                             date: null,
                             completed_date: null,
                             completed: false,
-                            tags: [],
+                            tags: tags || [],
                             priority: null,
                             child: null
                         })
