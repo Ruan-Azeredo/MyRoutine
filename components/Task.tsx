@@ -1,30 +1,34 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { SetStateAction, useEffect, useState } from 'react'
 import { TaskInterface } from '../types/task'
 import useTasksData from '../hooks/useTasksData'
 import AddTaskInput from './AddTaskInput'
 import { ChevronDown, ChevronUp, TagIcon, Trash2Icon } from 'lucide-react'
 import { tags_imgs } from '../consts/tags'
 
-const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) => {
+const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentTask: React.Dispatch<SetStateAction<{task: TaskInterface, father: TaskInterface}>>, father?: TaskInterface}) => {
 
     const useTask = useTasksData()
 
     const [newTag, setNewTag] = useState("")
     const [showAddTagInput, setShowAddTagInput] = useState(false)
-    const [showChildren, setShowChildren] = useState(true)
+    const [showChildren, setShowChildren] = useState(false)
     const [showDescription, setShowDescription] = useState(false)
     const [newTask, setNewTask] = useState<TaskInterface>(task)
     const [showSaveButton, setShowSaveButton] = useState(false)
 
+    useEffect(() => {
+        setCurrentTask({task, father})
+    }, [task])
+
     return (
-        <div className={`mb-2 ${task.completed ? 'opacity-25' : ''}`}>
+        <div onClick={() => setCurrentTask({task, father})} className={`mb-2 ${task.completed ? 'opacity-25' : ''}`}>
             <div className="flex text-gray-900 w-full">
                 <div className='w-full'>
                     <div className='flex'>
                         <div>
-                            <button onClick={() => setShowAddTagInput(!showAddTagInput)} className='bg-gray-900 text-gray-100 h-full px-1 rounded-l-md'>+</button>
+                            <button onClick={() => setShowAddTagInput(!showAddTagInput)} className={`${showAddTagInput ? 'bg-gray-100 text-gray-900' : 'bg-gray-900 text-gray-100'} h-full px-1 rounded-l-md`}>+</button>
                         </div>
                         <div className="shadow-sm ring-1 ring-inset ring-gray-300 rounded-r-md flex justify-between w-full h-fit">
                             <input
@@ -50,17 +54,18 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                                         }}
                                     />
                                 </div>
-                                <textarea
+                                {/* <textarea
                                     className={`text-xs text-gray-400 bg-transparent w-full flex border-0 focus:outline-none resize-none h-5 px-1 py-0 ${showDescription ? 'block' : 'hidden'}`}
-                                    value={task.description || ''}
+                                    value={newTask.description}
                                     onChange={(e) => {
                                         setNewTask({...task, description: e.target.value})
                                         setShowSaveButton(true)
                                     }}
-                                />
+                                /> */}
                             </div>
                         <div className={`${showSaveButton ? 'block' : 'hidden'} flex items-center gap-1 text-sm m-2 px-1 border-[1px] border-gray-900 rounded-md hover:bg-gray-100`}>
                             <button onClick={() => {
+                                console.log(newTask)
                                 useTask.update_task(newTask, father)
                             }}>Salvar</button>
                             <button onClick={() => setShowSaveButton(false)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
@@ -77,12 +82,15 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                                     setShowChildren(!showChildren)
                                     setShowDescription(!showDescription)
                                 }}>
-                                {showChildren ? <ChevronUp className='w-4 h-4'/> : <ChevronDown className='w-4 h-4'/>}
+                                {task.child ? showChildren ? (
+                                    <ChevronUp className={`w-4 h-4`}/>
+                                ) : (
+                                    <ChevronDown className={`w-4 h-4`}/>
+                                ) : null}
                             </button>
                         </div>
                     </div>
-                    </div>
-                    <div className={`mt-2 relative flex flex-grow items-stretch focus-within:z-10 ${showAddTagInput ? 'flex' : 'hidden'}`}>
+                    <div className={`ml-2 relative flex flex-grow items-stretch focus-within:z-10 ${showAddTagInput ? 'flex' : 'hidden'}`}>
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                             <TagIcon className='w-4 h-4' />
                         </div>
@@ -93,8 +101,9 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                             onClick={() => useTask.add_tag(task, newTag, father)}
                         >+</button>
                     </div>
+                    </div>
                     <div className={showAddTagInput ? '' : 'hidden'}>
-                        <AddTaskInput father={task} />
+                        <AddTaskInput father={task} tags={task.tags}/>
                     </div>
                 </div>
                 <div className="gap-2 flex flex-col">
@@ -112,18 +121,22 @@ const Task = ({task, father} : {task: TaskInterface, father?: TaskInterface}) =>
                             </span>
                         </div>
                     ))} */}
-                    {task.tags.map((tag) => (
-                        <div>
-                            {tags_imgs[tag] ? (
-                                <img className='h-9 w-9 object-cover rounded-md ml-2' src={tags_imgs[tag]} alt="tag image" />
-                            ) : <div>{tag}</div>}
-                        </div>
-                    ))}
+                    <div className='flex gap-1'>
+                        {task.tags.map((tag) => (
+                            <div>
+                                {tags_imgs[tag] ? (
+                                    <div>
+                                        <img className='h-9 w-9 object-cover rounded-md ml-2 cursor-pointer hover:opacity-50' src={tags_imgs[tag]} alt="tag image" onClick={() => useTask.delete_tag(task, tag, father)}/>
+                                    </div>
+                                ) : <div>{tag}</div>}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
             {showChildren && task.child?.map((child, item) => (
                 <div className='ml-16 mt-2' key={item}>
-                    <Task task={child} father={task}/>
+                    <Task setCurrentTask={setCurrentTask} task={child} father={task}/>
                 </div>
             ))}
         </div>
