@@ -8,8 +8,11 @@ import { searchTasks, setTasks } from "../store/reducers/data";
 import AddTaskInput from "../components/AddTaskInput";
 import { login } from "../store/reducers/auth";
 import { TaskInterface } from "../types/task";
+import useTasksData from "../hooks/useTasksData";
 
 export default function Home() {
+
+	const useTask = useTasksData()
 
 	const tasks = useAppSelector((state) => state.data.tasks)
 	const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
@@ -17,6 +20,8 @@ export default function Home() {
 
 	const [filterRule, setFilterRule] = useState("all")
 	const [displayTasks, setDisplayTasks] = useState([])
+	const [currentTask, setCurrentTask] = useState<{task: TaskInterface, father: TaskInterface | null} | null>(null)
+	const [newTask, setNewTask] = useState<TaskInterface | null>(null)
 
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
@@ -43,59 +48,86 @@ export default function Home() {
 			case "notChecked":
 				setDisplayTasks(tasks.filter(task => !task.completed));
 				break;
+			case "talqui":
+				setDisplayTasks(tasks.filter(task => task.tags?.includes("talqui")));
+				break
 			default:
 				setDisplayTasks(tasks);
 		}
 	}, [tasks, filterRule])
 
+	useEffect(() => {
+		setNewTask(currentTask?.task)
+	}, [currentTask])
+
 	return isAuthenticated ? (
-		<div className="flex min-h-screen">
-			<div className="bg-white m-4 w-full rounded-xl p-4">
-				<div className="w-full lg:w-1/2 ml-auto">
-					<div className="mb-4">
-						<label htmlFor="search" className="block text-sm font-medium leading-6 text-gray-900">
-							Quick search
-						</label>
-						<div className="relative mt-2 flex items-center">
-							<input
-								id="search"
-								name="search"
-								type="text"
-								className="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-								ref={(input) => {
-									if (input) {
-										window.addEventListener("keydown", (e) => {
-											if (e.metaKey && e.key === "k") {
-												e.preventDefault();
-												input.focus();
-											}
-										});
-									}
-								}}
-								onChange={(e) => dispatch(searchTasks(e.target.value))}
-							/>
-							<div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-								<kbd className="inline-flex items-center rounded border border-gray-200 px-1 font-sans text-xs text-gray-400">
-									⌘K
-								</kbd>
+		<div className="mx-auto min-h-screen flex w-full">
+			{/* <div className="flex min-h-screen "> */}
+				<div className="bg-white min-h-full m-4 w-full rounded-xl p-4 flex gap-4">
+        			<aside className={`${currentTask?.task.title ? 'stick w-1/2 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
+						<div className="flex">
+							<div className="w-full">
+								<input onChange={(e) => setNewTask({...newTask , title: e.target.value})} className="border-none rounded-md w-full font-bold text-xl" type="text" value={newTask?.title || currentTask?.task.title}/>
+								<textarea onChange={(e) => setNewTask({...newTask , description: e.target.value})} className="border-none rounded-md w-full text-sm mt-8" value={newTask?.description || currentTask?.task.description || ""} />
+								<button className="border-[1px] px-4 py-2 rounded-md border-gray-900 mt-8" onClick={() => {
+                                useTask.update_task(newTask, currentTask.father)
+                            }}>Salvar</button>
 							</div>
+							<button className="h-fit" onClick={() => setCurrentTask(null)}>x</button>
 						</div>
-					</div>
-					<label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-						Adicionar Nova Task
-					</label>
-					<AddTaskInput />
-					<div className="flex w-full py-2 gap-2">
-						<button className="bg-gray-900 py-2 px-4 rounded-md text-xs" onClick={() => setFilterRule('all')}>All</button>
-						<button className="bg-gray-900 py-2 px-4 rounded-md text-xs" onClick={() => setFilterRule('notChecked')}>Not Checked</button>
-					</div>
-					{displayTasks.map((task, index) => (
-						<div key={index}>
-							<Task task={task}/>
+					</aside>
+
+					<main className="flex-1">
+						<div className="w-full ml-auto">
+							<div className="mb-4">
+								<label htmlFor="search" className="block text-sm font-medium leading-6 text-gray-900">
+									Quick search
+								</label>
+								<div className="relative mt-2 flex items-center">
+									<input
+										id="search"
+										name="search"
+										type="text"
+										className="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										ref={(input) => {
+											if (input) {
+												window.addEventListener("keydown", (e) => {
+													if (e.metaKey && e.key === "k") {
+														e.preventDefault();
+														input.focus();
+													}
+												});
+											}
+										}}
+										onChange={(e) => dispatch(searchTasks(e.target.value))}
+									/>
+									<div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
+										<kbd className="inline-flex items-center rounded border border-gray-200 px-1 font-sans text-xs text-gray-400">
+											⌘K
+										</kbd>
+									</div>
+								</div>
+							</div>
+							<label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+								Adicionar Nova Task
+							</label>
+							<AddTaskInput />
+							<div className="flex w-full py-2 gap-2">
+								<button className={`${filterRule == 'all' ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} py-2 px-4 rounded-md text-xs`} onClick={() => setFilterRule('all')}>All</button>
+								<button className={`${filterRule == 'notChecked' ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} py-2 px-4 rounded-md text-xs`} onClick={() => setFilterRule('notChecked')}>Not Checked</button>
+								<button className={`${filterRule == 'talqui' ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} py-2 px-4 rounded-md text-xs`} onClick={() => setFilterRule('talqui')}>Talqui</button>
+							</div>
+							{displayTasks.map((task, index) => (
+								<div key={index}>
+									<Task setCurrentTask={setCurrentTask} task={task}/>
+								</div>
+							))}
 						</div>
-					))}
+				
+					</main>
 				</div>
-			</div>
+			{/* </div> */}
+
 		</div>
 	) : (
 		<div className="flex h-screen">
