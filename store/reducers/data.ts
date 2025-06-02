@@ -8,7 +8,7 @@ interface DataState {
 
 const initialState: DataState = {
     tasks: [
-        {   
+        /* {   
             customId: uucustomIdv4(),
             title: 'Assinar contrato Talqui',
             description: 'https://mail.google.com/mail/u/0/?ogbl#inbox',
@@ -28,7 +28,7 @@ const initialState: DataState = {
                 priority: null,
                 child: null
             }]
-        }
+        } */
     ]
 }
 
