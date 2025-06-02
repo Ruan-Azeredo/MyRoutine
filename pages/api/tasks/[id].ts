@@ -19,27 +19,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (father) {
           const updateChildTask = async (fatherId: string, taskToUpdate: any): Promise<boolean> => {
-        const parentTask = await Task.findOne({ customId: fatherId });
-        if (parentTask) {
-          const childIndex = parentTask.child?.findIndex((child: any) => child.customId === taskToUpdate.customId);
-          if (childIndex !== undefined && childIndex !== -1) {
-            parentTask.child![childIndex] = taskToUpdate;
-            await parentTask.save();
-            return true;
-          }
-        }
-        return false;
+            const parentTask = await Task.findOne({ customId: fatherId });
+            if (parentTask) {
+              const childIndex = parentTask.child?.findIndex((child: any) => child.customId === taskToUpdate.customId);
+              if (childIndex !== undefined && childIndex !== -1) {
+                parentTask.child![childIndex] = taskToUpdate;
+                await parentTask.save();
+                return true;
+              }
+            }
+            return false;
           };
 
           const updated = await updateChildTask(father.customId, task);
           if (!updated) return res.status(404).json({ error: "Tarefa ou pai não encontrado" });
-          return res.status(200).json(task);
-        } else {
-          const updated = await Task.findOneAndUpdate(
-        { customId: task.customId },
-        task,
-        { new: true }
-          );
+            return res.status(200).json(task);
+          } else {
+            const updated = await Task.findOneAndUpdate({ customId: task.customId }, task, { new: true });
           if (!updated) return res.status(404).json({ error: "Tarefa não encontrada" });
           return res.status(200).json(updated);
         }
