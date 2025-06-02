@@ -122,8 +122,8 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                         </div>
                     ))} */}
                     <div className='flex gap-1'>
-                        {task.tags.map((tag) => (
-                            <div>
+                        {task.tags.map((tag, i) => (
+                            <div key={i}>
                                 {tags_imgs[tag] ? (
                                     <div>
                                         <img className='h-9 w-9 object-cover rounded-md ml-2 cursor-pointer hover:opacity-50' src={tags_imgs[tag]} alt="tag image" onClick={() => useTask.delete_tag(task, tag, father)}/>
