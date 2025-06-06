@@ -129,7 +129,20 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                                     <div>
                                         <img className='h-9 w-9 object-cover rounded-md ml-2 cursor-pointer hover:opacity-50' src={tags_imgs[tag]} alt="tag image" onClick={() => useTask.delete_tag(task, tag, father)}/>
                                     </div>
-                                ) : <div>{tag}</div>}
+                                ) : (
+                                    <div className='flex gap-1 ml-2'>
+                                        <span className="inline-flex items-center gap-x-0.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                            {tag}
+                                            <button onClick={() => useTask.delete_tag(task, tag, father)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
+                                                <span className="sr-only">Remove</span>
+                                                <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 stroke-gray-700/50 group-hover:stroke-gray-700/75">
+                                                    <path d="M4 4l6 6m0-6l-6 6" />
+                                                </svg>
+                                                <span className="absolute -inset-1" />
+                                            </button>
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
