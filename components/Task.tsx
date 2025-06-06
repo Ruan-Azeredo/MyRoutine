@@ -15,10 +15,11 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
     const [showAddTagInput, setShowAddTagInput] = useState(false)
     const [showChildren, setShowChildren] = useState(false)
     const [showDescription, setShowDescription] = useState(false)
-    const [newTask, setNewTask] = useState<TaskInterface>(task)
+    const [newTask, setNewTask] = useState<TaskInterface>()
     const [showSaveButton, setShowSaveButton] = useState(false)
 
     useEffect(() => {
+        setNewTask(task)
         setCurrentTask({task, father})
     }, [task])
 
@@ -47,7 +48,7 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                                     <input
                                         type="text"
                                         className="text-sm w-full bg-transparent flex border-0 focus:outline-none px-1 py-0"
-                                        value={newTask.title}
+                                        value={newTask?.title || task.title}
                                         onChange={(e) => {
                                             setNewTask({...task, title: e.target.value})
                                             setShowSaveButton(true)
