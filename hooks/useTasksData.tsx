@@ -28,8 +28,8 @@ const useTasksData = () => {
 
             const newTask = await res.json();
             console.log("Nova tarefa adicionada:", newTask);
-            setLoading(false);
             dispatch(addTask({ task: newTask, father }));
+            setLoading(false);
         } catch (err) {
             console.error("Erro ao adicionar tarefa:", err);
         }
@@ -50,8 +50,9 @@ const useTasksData = () => {
             if (!res.ok) throw new Error("Erro ao atualizar tarefa");
 
             const updated = await res.json();
-            setLoading(false);
+            console.log("Tarefa atualizada:", updated);
             dispatch(updateTask({ task: updated, father }));
+            setLoading(false);
         } catch (err) {
             console.error("Erro ao atualizar tarefa:", err);
         }
@@ -71,8 +72,8 @@ const useTasksData = () => {
 
             if (!res.ok) throw new Error("Erro ao deletar tarefa");
 
-            setLoading(false);
             dispatch(deleteTask({ task, father }));
+            setLoading(false);
         } catch (err) {
             console.error("Erro ao deletar tarefa:", err);
         }
@@ -93,7 +94,7 @@ const useTasksData = () => {
         update_task(updatedTask, father);
     };
 
-    return { add_task, update_task, delete_task, add_tag, delete_tag, toggle_task, loading };
+    return { add_task, update_task, delete_task, add_tag, delete_tag, toggle_task, setLoading, loading };
 };
 
 export default useTasksData;
