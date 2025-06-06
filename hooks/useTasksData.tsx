@@ -4,13 +4,17 @@ import { TaskInterface, TaskProps } from "../types/task";
 import { useDispatch } from "react-redux";
 import { addTask, deleteTask, toggleTask, updateTask } from "../store/reducers/data";
 import { v4 as uuidv4 } from 'uuid';
+import { useState } from "react";
 
 const useTasksData = () => {   
 
     const dispatch = useDispatch()
 
+    const [loading, setLoading] = useState(false);
+
     const add_task = async (task: TaskProps, father?: TaskInterface) => {
         try {
+            setLoading(true);
             const res = await fetch("/api/tasks", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -24,6 +28,7 @@ const useTasksData = () => {
 
             const newTask = await res.json();
             console.log("Nova tarefa adicionada:", newTask);
+            setLoading(false);
             dispatch(addTask({ task: newTask, father }));
         } catch (err) {
             console.error("Erro ao adicionar tarefa:", err);
@@ -32,6 +37,7 @@ const useTasksData = () => {
 
     const update_task = async (task: TaskInterface, father?: TaskInterface) => {
         try {
+            setLoading(true);
             const res = await fetch(`/api/tasks/${task.customId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -44,6 +50,7 @@ const useTasksData = () => {
             if (!res.ok) throw new Error("Erro ao atualizar tarefa");
 
             const updated = await res.json();
+            setLoading(false);
             dispatch(updateTask({ task: updated, father }));
         } catch (err) {
             console.error("Erro ao atualizar tarefa:", err);
@@ -53,6 +60,7 @@ const useTasksData = () => {
     const delete_task = async (task: TaskInterface, father?: TaskInterface) => {
         console.log("Deleting task:", task, "Father:", father ? father.customId : "None");
         try {
+            setLoading(true);
             const res = await fetch(`/api/tasks/${task.customId}`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
@@ -63,6 +71,7 @@ const useTasksData = () => {
 
             if (!res.ok) throw new Error("Erro ao deletar tarefa");
 
+            setLoading(false);
             dispatch(deleteTask({ task, father }));
         } catch (err) {
             console.error("Erro ao deletar tarefa:", err);
@@ -84,7 +93,7 @@ const useTasksData = () => {
         update_task(updatedTask, father);
     };
 
-    return { add_task, update_task, delete_task, add_tag, delete_tag, toggle_task };
+    return { add_task, update_task, delete_task, add_tag, delete_tag, toggle_task, loading };
 };
 
 export default useTasksData;

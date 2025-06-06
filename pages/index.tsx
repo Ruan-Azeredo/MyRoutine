@@ -9,6 +9,7 @@ import AddTaskInput from "../components/AddTaskInput";
 import { login } from "../store/reducers/auth";
 import { TaskInterface } from "../types/task";
 import useTasksData from "../hooks/useTasksData";
+import { LoaderCircleIcon } from "lucide-react";
 
 export default function Home() {
 
@@ -64,6 +65,7 @@ export default function Home() {
 		<div className="mx-auto min-h-screen flex w-full">
 			{/* <div className="flex min-h-screen "> */}
 				<div className="bg-white min-h-full m-4 w-full rounded-xl p-4 flex gap-4">
+					<LoaderCircleIcon className={`h-5 w-5 right-8 text-gray-900 animate-spin ${useTask.loading ? 'fixed' : 'hidden'}`}/>
         			<aside className={`${currentTask?.task.title ? 'stick w-1/2 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
 						<div className="flex">
 							<div className="w-full">
