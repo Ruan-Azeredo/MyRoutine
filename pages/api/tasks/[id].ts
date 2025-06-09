@@ -18,24 +18,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { father, task } = req.body;
 
         if (father) {
-          const updateChildTask = async (fatherId: string, taskToUpdate: any): Promise<boolean> => {
+          const updateChildTask = async (fatherId: string, taskToUpdate: any): Promise<any | null> => {
             const parentTask = await Task.findOne({ customId: fatherId });
-            if (parentTask) {
-              const childIndex = parentTask.child?.findIndex((child: any) => child.customId === taskToUpdate.customId);
-              if (childIndex !== undefined && childIndex !== -1) {
-                parentTask.child![childIndex] = taskToUpdate;
-                await parentTask.save();
-                return true;
+            if (parentTask && parentTask.child) {
+              const childIndex = parentTask.child.findIndex((child: any) => child.customId === taskToUpdate.customId);
+              if (childIndex !== -1) {
+                // Update only the fields you want to change
+                Object.assign(parentTask.child[childIndex], taskToUpdate);
+
+                // Mark the path as modified
+                parentTask.markModified('child');
+
+                // Save parentTask to persist the change
+                const updatedTask = await parentTask.save();
+
+                console.log(`Child task updated: ${JSON.stringify(parentTask.child[childIndex])}`);
+                return parentTask.child[childIndex];
               }
             }
-            return false;
+            return null;
           };
 
-          const updated = await updateChildTask(father.customId, task);
-          if (!updated) return res.status(404).json({ error: "Tarefa ou pai não encontrado" });
-            return res.status(200).json(task);
-          } else {
-            const updated = await Task.findOneAndUpdate({ customId: task.customId }, task, { new: true });
+
+          const updatedChild = await updateChildTask(father.customId, task);
+          if (!updatedChild) {
+            return res.status(404).json({ error: "Tarefa ou pai não encontrado" });
+          }
+          return res.status(200).json(updatedChild);
+        } else {
+          const updated = await Task.findOneAndUpdate({ customId: task.customId }, task, { new: true });
           if (!updated) return res.status(404).json({ error: "Tarefa não encontrada" });
           return res.status(200).json(updated);
         }
