@@ -66,7 +66,7 @@ export default function Home() {
 			{/* <div className="flex min-h-screen "> */}
 				<div className="bg-white min-h-full m-4 w-full rounded-xl p-4 flex gap-4">
 					<LoaderCircleIcon className={`h-5 w-5 right-8 text-gray-900 animate-spin ${useTask.loading ? 'fixed' : 'hidden'}`}/>
-        			<aside className={`${currentTask?.task.title ? 'stick w-1/2 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
+        			<aside className={`${currentTask?.task.title ? 'hidden w-0 md:sticky md:top-0 md:w-1/2 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
 						<div className="flex">
 							<div className="w-full">
 								<input onChange={(e) => setNewTask({...newTask , title: e.target.value})} className="border-none rounded-md w-full font-bold text-xl" type="text" value={newTask?.title || currentTask?.task.title}/>
