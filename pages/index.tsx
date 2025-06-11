@@ -10,17 +10,16 @@ import { login } from "../store/reducers/auth";
 import { TaskInterface } from "../types/task";
 import useTasksData from "../hooks/useTasksData";
 import { LoaderCircleIcon } from "lucide-react";
+import Filters from "../components/Filters";
 
 export default function Home() {
 
 	const useTask = useTasksData()
 
-	const tasks = useAppSelector((state) => state.data.tasks)
+	const displayTasks = useAppSelector((state) => state.data.displayTasks)
 	const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
 	const dispatch = useDispatch()
 
-	const [filterRule, setFilterRule] = useState("all")
-	const [displayTasks, setDisplayTasks] = useState([])
 	const [currentTask, setCurrentTask] = useState<{task: TaskInterface, father: TaskInterface | null} | null>(null)
 	const [newTask, setNewTask] = useState<TaskInterface | null>(null)
 
@@ -41,7 +40,7 @@ export default function Home() {
 		fetchTasks();
 	}, [])
 
-	useEffect(() => {
+/* 	useEffect(() => {
 		switch (filterRule) {
 			case "all":
 				setDisplayTasks(tasks);
@@ -55,7 +54,7 @@ export default function Home() {
 			default:
 				setDisplayTasks(tasks);
 		}
-	}, [tasks, filterRule])
+	}, [tasks, filterRule]) */
 
 	useEffect(() => {
 		setNewTask(currentTask?.task)
@@ -114,12 +113,9 @@ export default function Home() {
 								Adicionar Nova Task
 							</label>
 							<AddTaskInput />
-							<div className="flex w-full py-2 gap-2">
-								<button className={`${filterRule == 'all' ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} py-2 px-4 rounded-md text-xs`} onClick={() => setFilterRule('all')}>All</button>
-								<button className={`${filterRule == 'notChecked' ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} py-2 px-4 rounded-md text-xs`} onClick={() => setFilterRule('notChecked')}>Not Checked</button>
-								<button className={`${filterRule == 'talqui' ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} py-2 px-4 rounded-md text-xs`} onClick={() => setFilterRule('talqui')}>Talqui</button>
-							</div>
-							{displayTasks.map((task, index) => (
+
+							<Filters/>
+							{displayTasks?.map((task, index) => (
 								<div key={index}>
 									<Task setCurrentTask={setCurrentTask} task={task}/>
 								</div>

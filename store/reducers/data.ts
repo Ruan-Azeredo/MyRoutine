@@ -4,32 +4,12 @@ import { v4 as uucustomIdv4 } from 'uuid';
 
 interface DataState {
     tasks: TaskInterface[]
+    displayTasks: TaskInterface[]
 }
 
 const initialState: DataState = {
-    tasks: [
-        /* {   
-            customId: uucustomIdv4(),
-            title: 'Assinar contrato Talqui',
-            description: 'https://mail.google.com/mail/u/0/?ogbl#inbox',
-            date: null,
-            completed_date: null,
-            completed: false,
-            tags: ['talqui'],
-            priority: null,
-            child: [{
-                customId: uucustomIdv4(),
-                title: 'verificar email',
-                description: 'https://mail.google.com/mail/u/0/?ogbl#inbox',
-                date: null,
-                completed_date: null,
-                completed: false,
-                tags: ['talqui'],
-                priority: null,
-                child: null
-            }]
-        } */
-    ]
+    tasks: [],
+    displayTasks: []
 }
 
 export const dataSlice = createSlice({
@@ -38,6 +18,10 @@ export const dataSlice = createSlice({
     reducers: {
         setTasks: (state, action: PayloadAction<TaskInterface[]>) => {
             state.tasks = action.payload
+            state.displayTasks = action.payload
+        },
+        filterDisplayTasks: (state, action: PayloadAction<TaskInterface[]>) => {
+            state.displayTasks = action.payload
         },
         addTask: (state, action: PayloadAction<{task: TaskInterface, father?: TaskInterface}>) => {
             const task: TaskInterface = action.payload.task
@@ -56,8 +40,10 @@ export const dataSlice = createSlice({
                 };
 
                 addChildTask(state.tasks, action.payload.father.customId, task);
+                addChildTask(state.displayTasks, action.payload.father.customId, task);
             } else {
                 state.tasks.push(task)
+                state.displayTasks.push(task)
             }
         },
         deleteTask: (state, action: PayloadAction<{task: TaskInterface, father?: TaskInterface}>) => {
@@ -76,8 +62,10 @@ export const dataSlice = createSlice({
                 };
 
                 removeChildTask(state.tasks, action.payload.father.customId, action.payload.task.customId);
+                removeChildTask(state.displayTasks, action.payload.father.customId, action.payload.task.customId);
             } else {
                 state.tasks = state.tasks.filter(task => task.customId !== action.payload.task.customId)
+                state.displayTasks = state.displayTasks.filter(task => task.customId !== action.payload.task.customId)
             }
         },
         updateTask: (state, action: PayloadAction<{task: TaskInterface, father?: TaskInterface}>) => {
@@ -99,10 +87,15 @@ export const dataSlice = createSlice({
                 };
 
                 updateChildTask(state.tasks, action.payload.father.customId, action.payload.task);
+                updateChildTask(state.displayTasks, action.payload.father.customId, action.payload.task);
             } else {
                 const taskIndex = state.tasks.findIndex(task => task.customId === action.payload.task.customId)
                 if (taskIndex !== -1) {
                     state.tasks[taskIndex] = action.payload.task
+                }
+                const displaTaskIndex = state.displayTasks.findIndex(task => task.customId === action.payload.task.customId)
+                if (displaTaskIndex !== -1){
+                    state.displayTasks[displaTaskIndex] = action.payload.task
                 }
             }
         },
@@ -123,11 +116,11 @@ export const dataSlice = createSlice({
         },
         searchTasks: (state, action: PayloadAction<string>) => {
             if(action.payload.trim() === '') {
-                state.tasks = initialState.tasks
+                state.displayTasks = state.tasks
                 return;
             }
             const searchTerm = action.payload.toLowerCase()
-            state.tasks = state.tasks.filter(task => 
+            state.displayTasks = state.tasks.filter(task => 
                 task.title.toLowerCase().includes(searchTerm) || 
                 (task.description && task.description.toLowerCase().includes(searchTerm)) ||
                 (task.tags && task.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
@@ -136,5 +129,5 @@ export const dataSlice = createSlice({
     }
 })
 
-export const { setTasks, addTask, deleteTask, updateTask, toggleTask, searchTasks } = dataSlice.actions
+export const { setTasks, filterDisplayTasks, addTask, deleteTask, updateTask, toggleTask, searchTasks } = dataSlice.actions
 export default dataSlice.reducer
