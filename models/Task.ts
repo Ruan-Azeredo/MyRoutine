@@ -7,6 +7,7 @@ const TaskSchema = new Schema({
     date: { type: Number },
     completed_date: { type: Number },
     completed: { type: Boolean, default: false },
+    priority: {type: Number},
     tags: { type: [String], default: [] },
     child: { type: Schema.Types.Mixed } // pode ser ajustado se souber o formato exato
 }, { timestamps: true });

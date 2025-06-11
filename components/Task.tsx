@@ -4,7 +4,7 @@ import React, { SetStateAction, useEffect, useState } from 'react'
 import { TaskInterface } from '../types/task'
 import useTasksData from '../hooks/useTasksData'
 import AddTaskInput from './AddTaskInput'
-import { ChevronDown, ChevronUp, TagIcon, Trash2Icon } from 'lucide-react'
+import { ArrowUpWideNarrowIcon, ChevronDown, ChevronDownIcon, ChevronsDownIcon, ChevronsUpIcon, ChevronUp, ChevronUpIcon, EqualIcon, MinusIcon, PlusIcon, TagIcon, Trash2Icon } from 'lucide-react'
 import { tags_imgs } from '../consts/tags'
 
 const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentTask: React.Dispatch<SetStateAction<{task: TaskInterface, father: TaskInterface}>>, father?: TaskInterface}) => {
@@ -22,6 +22,23 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
         setNewTask(task)
         setCurrentTask({task, father})
     }, [task])
+
+    const PriorityIcon = (() => {
+        switch (task.priority) {
+            case 5:
+                return <ChevronsUpIcon className={`w-4 h-4 text-red-500`} />
+            case 4:
+                return <ChevronUpIcon className={`w-4 h-4 text-orange-500`} />
+            case 3:
+                return <EqualIcon className={`w-4 h-4 text-yellow-500`} />
+            case 2:
+                return <ChevronDownIcon className={`w-4 h-4 text-green-500`} />
+            case 1:
+                return <ChevronsDownIcon className={`w-4 h-4 text-blue-500`} />
+            default:
+                return null
+        }
+    })();
 
     return (
         <div onClick={() => setCurrentTask({task, father})} className={`mb-2 ${task.completed ? 'opacity-25' : ''}`}>
@@ -78,6 +95,9 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                                 </button>
                         </div>
                         <div className='flex mr-4 gap-2'>
+                            <div className='my-auto'>
+                                {PriorityIcon}
+                            </div>
                             <button onClick={() => useTask.delete_task(task, father)} className="my-auto"><Trash2Icon className='h-[14px] w-[14px]'/></button>
                             <button onClick={() => {
                                     setShowChildren(!showChildren)
@@ -91,16 +111,26 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                             </button>
                         </div>
                     </div>
-                    <div className={`ml-2 relative flex flex-grow items-stretch focus-within:z-10 ${showAddTagInput ? 'flex' : 'hidden'}`}>
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                            <TagIcon className='w-4 h-4' />
+                    <div className={showAddTagInput ? 'flex' : 'hidden'}>
+                        <div className={`ml-2 relative flex flex-grow items-stretch focus-within:z-10`}>
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <TagIcon className='w-4 h-4' />
+                            </div>
+                            <input onChange={(e) => setNewTag(e.target.value)} type="text" placeholder='tag' className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                            <button
+                                type="button"
+                                className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold bg-gray-900 text-gray-100 ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:text-gray-900"
+                                onClick={() => useTask.add_tag(task, newTag, father)}
+                            >+</button>
                         </div>
-                        <input onChange={(e) => setNewTag(e.target.value)} type="text" placeholder='tag' className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
-                        <button
-                            type="button"
-                            className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold bg-gray-900 text-gray-100 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                            onClick={() => useTask.add_tag(task, newTag, father)}
-                        >+</button>
+                        <div className='flex flex-col h-full'>
+                            <button onClick={() => useTask.sum_priority(task, father)} className='bg-gray-900 text-gray-100 ml-2 rounded-t-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
+                                <ChevronUpIcon className={`w-4 h-4`}/>
+                            </button>
+                            <button onClick={() => useTask.subtract_priority(task, father)} className='bg-gray-900 text-gray-100 ml-2 rounded-b-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
+                                <ChevronDownIcon className={`w-4 h-4`}/>
+                            </button>
+                        </div>
                     </div>
                     </div>
                     <div className={showAddTagInput ? '' : 'hidden'}>

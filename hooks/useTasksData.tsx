@@ -94,7 +94,19 @@ const useTasksData = () => {
         update_task(updatedTask, father);
     };
 
-    return { add_task, update_task, delete_task, add_tag, delete_tag, toggle_task, setLoading, loading };
+    const sum_priority = (task: TaskInterface, father?: TaskInterface) => {
+        if(task.priority >= 5) return
+        const updatedTask = { ...task, priority: (task.priority ?? 0) + 1 };
+        update_task(updatedTask, father);
+    };
+
+    const subtract_priority = (task: TaskInterface, father?: TaskInterface) => {
+        if(task.priority <= 0 || task.priority == null) return
+        const updatedTask = { ...task, priority: (task.priority ?? 0) - 1 };
+        update_task(updatedTask, father);
+    };
+
+    return { add_task, update_task, delete_task, add_tag, delete_tag, toggle_task, sum_priority, subtract_priority, setLoading, loading };
 };
 
 export default useTasksData;
