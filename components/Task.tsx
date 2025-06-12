@@ -85,6 +85,7 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                             <button onClick={() => {
                                 console.log(newTask)
                                 useTask.update_task(newTask, father)
+                                setShowSaveButton(false)
                             }}>Salvar</button>
                             <button onClick={() => setShowSaveButton(false)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
                                     <span className="sr-only">Remove</span>
