@@ -26,7 +26,7 @@ export default function Filters(){
         }
         if(priorityOrder){
             console.log(updatedTasks)
-            updatedTasks.sort((a, b) => ( a.priority || 0) - ( b.priority || 0))
+            updatedTasks = [...updatedTasks].sort((a, b) => (b.priority || 0) - (a.priority || 0))
         }
         if(tags.length > 0){
             updatedTasks = tags.reduce((acc, tag) => {
