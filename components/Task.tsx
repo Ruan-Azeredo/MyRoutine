@@ -6,6 +6,7 @@ import useTasksData from '../hooks/useTasksData'
 import AddTaskInput from './AddTaskInput'
 import { ArrowUpWideNarrowIcon, ChevronDown, ChevronDownIcon, ChevronsDownIcon, ChevronsUpIcon, ChevronUp, ChevronUpIcon, EqualIcon, MinusIcon, PlusIcon, TagIcon, Trash2Icon } from 'lucide-react'
 import { tags_imgs } from '../consts/tags'
+import useFilter from '../hooks/useFilter'
 
 const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentTask: React.Dispatch<SetStateAction<{task: TaskInterface, father: TaskInterface}>>, father?: TaskInterface}) => {
 
@@ -18,10 +19,30 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
     const [newTask, setNewTask] = useState<TaskInterface>()
     const [showSaveButton, setShowSaveButton] = useState(false)
 
+    const {notChecked, priorityOrder, tags, priority, filterTaskArray} = useFilter()
+
+    const [childTasks, setChildTasks] = useState(filterTaskArray(task.child || []))
+    
     useEffect(() => {
         setNewTask(task)
         setCurrentTask({task, father})
-    }, [task])
+        /* setChildTasks(task.child) */
+
+        console.log('change', task.title, task.child)
+        const updatedChildTasks = filterTaskArray(task.child || [])
+
+        console.log(childTasks, updatedChildTasks)
+        setChildTasks(updatedChildTasks)
+    }, [task, notChecked, priorityOrder, tags, priority])
+
+    /* useEffect(() => {
+       console.log('change', filter.notChecked)
+        const updatedChildTasks = filter.filterTaskArray(task.child || [])
+
+        //console.log(updatedChildTasks)
+        setChildTasks(updatedChildTasks)
+    }, [filter.notChecked, filter.priorityOrder, filter.tags, filter.priority]) */
+
 
     const PriorityIcon = (() => {
         switch (task.priority) {
@@ -179,7 +200,7 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                     </div>
                 </div>
             </div>
-            {showChildren && task.child?.map((child, item) => (
+            {showChildren && childTasks?.map((child, item) => (
                 <div className='ml-16 mt-2' key={item}>
                     <Task setCurrentTask={setCurrentTask} task={child} father={task}/>
                 </div>
