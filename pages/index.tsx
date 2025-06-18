@@ -62,7 +62,7 @@ export default function Home() {
 	return isAuthenticated ? (
 		<div className="mx-auto min-h-screen flex w-full">
 			{/* <div className="flex min-h-screen "> */}
-				<div className="bg-white min-h-full m-4 w-full rounded-xl p-4 flex gap-4">
+				<div className="bg-white min-h-full m-1 md:m-4 w-full rounded-xl p-4 flex gap-4">
 					<LoaderCircleIcon className={`h-5 w-5 right-8 text-gray-900 animate-spin ${useTask.loading ? 'fixed' : 'hidden'}`}/>
         			<aside className={`${currentTask?.task.title ? 'hidden w-0 md:sticky md:top-0 md:w-1/3 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
 						<div className="flex">
@@ -79,7 +79,7 @@ export default function Home() {
 
 					<main className="flex-1">
 						<div className="w-full ml-auto">
-							<div className="mb-4">
+							<div className="mb-4 hidden md:block">
 								<label htmlFor="search" className="block text-sm font-medium leading-6 text-gray-900">
 									Quick search
 								</label>
