@@ -4,24 +4,27 @@ import React, { useEffect, useState } from "react";
 import Task from "../components/Task";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { useDispatch } from "react-redux";
-import { searchTasks, setTasks } from "../store/reducers/data";
+import { filterDisplayTasks, searchTasks, setTasks } from "../store/reducers/data";
 import AddTaskInput from "../components/AddTaskInput";
 import { login } from "../store/reducers/auth";
 import { TaskInterface } from "../types/task";
 import useTasksData from "../hooks/useTasksData";
 import { LoaderCircleIcon } from "lucide-react";
 import Filters from "../components/Filters";
+import useFilter from "../hooks/useFilter";
 
 export default function Home() {
 
 	const useTask = useTasksData()
 
+	const tasks = useAppSelector((state) => state.data.tasks)
 	const displayTasks = useAppSelector((state) => state.data.displayTasks)
 	const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
 	const dispatch = useDispatch()
 
 	const [currentTask, setCurrentTask] = useState<{task: TaskInterface, father: TaskInterface | null} | null>(null)
 	const [newTask, setNewTask] = useState<TaskInterface | null>(null)
+	const [tasksLoaded, setTasksLoaded] = useState(false)
 
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
@@ -32,6 +35,7 @@ export default function Home() {
 				const resp = await fetch("/api/tasks");
 				const data = await resp.json();
 				dispatch(setTasks(data));
+				setTasksLoaded(true);
 				console.log("Tasks fetched successfully:", data)
 			} catch (err) {
 				console.log(err);
@@ -40,21 +44,16 @@ export default function Home() {
 		fetchTasks();
 	}, [])
 
-/* 	useEffect(() => {
-		switch (filterRule) {
-			case "all":
-				setDisplayTasks(tasks);
-				break;
-			case "notChecked":
-				setDisplayTasks(tasks.filter(task => !task.completed));
-				break;
-			case "talqui":
-				setDisplayTasks(tasks.filter(task => task.tags?.includes("talqui")));
-				break
-			default:
-				setDisplayTasks(tasks);
-		}
-	}, [tasks, filterRule]) */
+	const filter = useFilter()
+
+	useEffect(() => {
+        if (tasksLoaded && tasks.length > 0) {
+			console.log('tasksLoaded', tasksLoaded, tasks)
+            const updatedTasks = filter.filterTaskArray(tasks)
+            dispatch(filterDisplayTasks(updatedTasks))
+            console.log(updatedTasks, displayTasks)
+        }
+    }, [tasksLoaded, filter.notChecked, filter.priorityOrder, filter.tags, filter.priority])
 
 	useEffect(() => {
 		setNewTask(currentTask?.task)
@@ -65,7 +64,7 @@ export default function Home() {
 			{/* <div className="flex min-h-screen "> */}
 				<div className="bg-white min-h-full m-4 w-full rounded-xl p-4 flex gap-4">
 					<LoaderCircleIcon className={`h-5 w-5 right-8 text-gray-900 animate-spin ${useTask.loading ? 'fixed' : 'hidden'}`}/>
-        			<aside className={`${currentTask?.task.title ? 'hidden w-0 md:sticky md:top-0 md:w-1/2 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
+        			<aside className={`${currentTask?.task.title ? 'hidden w-0 md:sticky md:top-0 md:w-1/3 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
 						<div className="flex">
 							<div className="w-full">
 								<input onChange={(e) => setNewTask({...newTask , title: e.target.value})} className="border-none rounded-md w-full font-bold text-xl" type="text" value={newTask?.title || currentTask?.task.title}/>
