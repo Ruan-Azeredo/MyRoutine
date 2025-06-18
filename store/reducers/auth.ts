@@ -5,7 +5,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    isAuthenticated: false
+    isAuthenticated: process.env.NODE_ENV === 'development' ? true : false
 }
 
 export const authSlice = createSlice({

@@ -24,7 +24,7 @@ export default function Home() {
 
 	const [currentTask, setCurrentTask] = useState<{task: TaskInterface, father: TaskInterface | null} | null>(null)
 	const [newTask, setNewTask] = useState<TaskInterface | null>(null)
-	const [tasksLoaded, setTasksLoaded] = useState(false)
+	const [tasksLoaded, setTasksLoaded] = useState(0)
 
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
@@ -35,7 +35,7 @@ export default function Home() {
 				const resp = await fetch("/api/tasks");
 				const data = await resp.json();
 				dispatch(setTasks(data));
-				setTasksLoaded(true);
+				setTasksLoaded((n) => n + 1);
 				console.log("Tasks fetched successfully:", data)
 			} catch (err) {
 				console.log(err);
@@ -47,13 +47,13 @@ export default function Home() {
 	const filter = useFilter()
 
 	useEffect(() => {
-        if (tasksLoaded && tasks.length > 0) {
+        if (tasksLoaded === 1 && tasks.length > 0) {
 			console.log('tasksLoaded', tasksLoaded, tasks)
             const updatedTasks = filter.filterTaskArray(tasks)
             dispatch(filterDisplayTasks(updatedTasks))
             console.log(updatedTasks, displayTasks)
         }
-    }, [tasksLoaded, filter.notChecked, filter.priorityOrder, filter.tags, filter.priority])
+    }, [tasks, filter.notChecked, filter.priorityOrder, filter.tags, filter.priority])
 
 	useEffect(() => {
 		setNewTask(currentTask?.task)
