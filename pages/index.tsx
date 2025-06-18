@@ -64,18 +64,6 @@ export default function Home() {
 			{/* <div className="flex min-h-screen "> */}
 				<div className="bg-white min-h-full m-1 md:m-4 w-full rounded-xl p-4 flex gap-4">
 					<LoaderCircleIcon className={`h-5 w-5 right-8 text-gray-900 animate-spin ${useTask.loading ? 'fixed' : 'hidden'}`}/>
-        			<aside className={`${currentTask?.task.title ? 'hidden w-0 md:sticky md:top-0 md:w-1/3 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
-						<div className="flex">
-							<div className="w-full">
-								<input onChange={(e) => setNewTask({...newTask , title: e.target.value})} className="border-none rounded-md w-full font-bold text-xl" type="text" value={newTask?.title || currentTask?.task.title}/>
-								<textarea onChange={(e) => setNewTask({...newTask , description: e.target.value})} className="border-none rounded-md w-full text-sm mt-8" value={newTask?.description || currentTask?.task.description || ""} />
-								<button className="border-[1px] px-4 py-2 rounded-md border-gray-900 mt-8" onClick={() => {
-                                useTask.update_task(newTask, currentTask.father)
-                            }}>Salvar</button>
-							</div>
-							<button className="h-fit" onClick={() => setCurrentTask(null)}>x</button>
-						</div>
-					</aside>
 
 					<main className="flex-1">
 						<div className="w-full ml-auto">
@@ -122,6 +110,19 @@ export default function Home() {
 						</div>
 				
 					</main>
+
+					<aside className={`${currentTask?.task.title ? 'hidden w-0 md:sticky md:top-0 md:w-1/3 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
+						<div className="flex">
+							<div className="w-full">
+								<input onChange={(e) => setNewTask({...newTask , title: e.target.value})} className="border-none rounded-md w-full font-bold text-xl" type="text" value={newTask?.title || currentTask?.task.title}/>
+								<textarea onChange={(e) => setNewTask({...newTask , description: e.target.value})} className="border-none rounded-md w-full text-sm mt-8" value={newTask?.description || currentTask?.task.description || ""} />
+								<button className="border-[1px] px-4 py-2 rounded-md border-gray-900 mt-8" onClick={() => {
+                                useTask.update_task(newTask, currentTask.father)
+                            }}>Salvar</button>
+							</div>
+							<button className="h-fit" onClick={() => setCurrentTask(null)}>x</button>
+						</div>
+					</aside>
 				</div>
 			{/* </div> */}
 
