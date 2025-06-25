@@ -116,9 +116,10 @@ export default function Home() {
 							<div className="w-full">
 								<input onChange={(e) => setNewTask({...newTask , title: e.target.value})} className="border-none rounded-md w-full font-bold text-xl" type="text" value={newTask?.title || currentTask?.task.title}/>
 								<textarea onChange={(e) => setNewTask({...newTask , description: e.target.value})} className="border-none rounded-md w-full text-sm mt-8" value={newTask?.description || currentTask?.task.description || ""} />
-								<button className="border-[1px] px-4 py-2 rounded-md border-gray-900 mt-8" onClick={() => {
-                                useTask.update_task(newTask, currentTask.father)
-                            }}>Salvar</button>
+									<button className="border-[1px] px-4 py-2 rounded-md border-gray-900 mt-8" onClick={() => {
+									useTask.update_task(newTask, currentTask.father)
+								}}>Salvar</button>
+								<AddTaskInput father={currentTask?.task} tags={currentTask?.task.tags}/>
 							</div>
 							<button className="h-fit" onClick={() => setCurrentTask(null)}>x</button>
 						</div>
