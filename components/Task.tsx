@@ -1,11 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React, { SetStateAction, useEffect, useState } from 'react'
 import { TaskInterface } from '../types/task'
 import useTasksData from '../hooks/useTasksData'
 import AddTaskInput from './AddTaskInput'
-import { ChevronDown, ChevronDownIcon, ChevronsDownIcon, ChevronsUpIcon, ChevronUp, ChevronUpIcon, EqualIcon, MinusIcon, PlusIcon, TagIcon, Trash2Icon } from 'lucide-react'
-import { tags_imgs } from '../consts/tags'
+import { ChevronDown, ChevronDownIcon, ChevronsDownIcon, ChevronsUpIcon, ChevronUp, ChevronUpIcon, EllipsisVerticalIcon, EqualIcon, MinusIcon, PlusIcon, TagIcon, Trash2Icon } from 'lucide-react'
+import { tags_imgs, tags_list } from '../consts/tags'
 
 const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentTask: React.Dispatch<SetStateAction<{task: TaskInterface, father: TaskInterface}>>, father?: TaskInterface}) => {
 
@@ -42,15 +43,58 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
     })();
 
     return (
-        <div onClick={() => setCurrentTask({task, father})} className={`mb-2 ${task.completed ? 'opacity-25' : ''}`}>
-            <div className="flex text-gray-900 w-full">
+        <div className={`mb-2 ${task.completed ? 'opacity-25' : ''}`}>
+            <div className=" text-gray-900 w-full">
+            <div className="gap-2 flex flex-col">
+                    {/* {task.tags.map((tag, index) => (
+                        <div className='flex gap-1' key={index}>
+                            <span className="inline-flex items-center gap-x-0.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                {tag}
+                                <button onClick={() => useTask.delete_tag(task, tag, father)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
+                                    <span className="sr-only">Remove</span>
+                                    <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 stroke-gray-700/50 group-hover:stroke-gray-700/75">
+                                        <path d="M4 4l6 6m0-6l-6 6" />
+                                    </svg>
+                                    <span className="absolute -inset-1" />
+                                </button>
+                            </span>
+                        </div>
+                    ))} */}
+                    <div className="relative w-full">
+                        <div className="flex gap-1 absolute -top-1 right-0 mr-6">
+                            {task.tags.map((tag, i) => (
+                                <div key={i}>
+                                    {tags_list.find(t => t.name.toLowerCase() === tag.toLowerCase()) ? (
+                                        <div style={{backgroundColor: tags_list.find(t => t.name.toLowerCase() === tag.toLowerCase())?.color}} className={`flex gap-1 px-1 pt-[1px] pb-[1px]  rounded-[4px] items-center ${task.tags.length > 1 ? 'ml-2' : ''}`}>
+                                            <img className='h-3 w-3 object-cover rounded-md cursor-pointer hover:opacity-50' src={tags_list.find(t => t.name.toLowerCase() === tag.toLowerCase())?.image} alt="tag image" onClick={() => useTask.delete_tag(task, tag, father)}/>
+                                            <span className='text-[10px] text-gray-100'>{tag}</span>
+                                        </div>
+                                    ) : (
+                                        <div className='flex gap-1 ml-2'>
+                                            <span className="inline-flex items-center gap-x-0.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                                {tag}
+                                                <button onClick={() => useTask.delete_tag(task, tag, father)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
+                                                    <span className="sr-only">Remove</span>
+                                                    <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 stroke-gray-700/50 group-hover:stroke-gray-700/75">
+                                                        <path d="M4 4l6 6m0-6l-6 6" />
+                                                    </svg>
+                                                    <span className="absolute -inset-1" />
+                                                </button>
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
                 <div className='w-full'>
                     <div className='flex md:flex-row flex-col w-full'>
                         <div className='flex w-full'>
                             <div>
                                 <button onClick={() => setShowAddTagInput(!showAddTagInput)} className={`${showAddTagInput ? 'bg-gray-100 text-gray-900' : 'bg-gray-900 text-gray-100'} h-full px-1 rounded-l-md`}>+</button>
                             </div>
-                            <div className="shadow-sm ring-1 ring-inset ring-gray-300 rounded-r-md flex justify-between w-full h-fit">
+                            <div className="shadow-sm ring-1 ring-inset ring-gray-300 rounded-md flex justify-between w-full h-fit md:py-2">
                                 <input
                                     id="select-all"
                                     name="select-all"
@@ -112,6 +156,7 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                                             <ChevronDown className={`w-4 h-4`}/>
                                         ) : null}
                                     </button>
+                                    <button onClick={() => setCurrentTask({task, father})}><EllipsisVerticalIcon className='w-4 h-4'/></button>
                                 </div>
                             </div>
                         </div>
@@ -138,47 +183,7 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                         </div>
                     </div>
                     <div className={showAddTagInput ? '' : 'hidden'}>
-                        <AddTaskInput father={task} tags={task.tags}/>
-                    </div>
-                </div>
-                <div className="gap-2 flex flex-col">
-                    {/* {task.tags.map((tag, index) => (
-                        <div className='flex gap-1' key={index}>
-                            <span className="inline-flex items-center gap-x-0.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
-                                {tag}
-                                <button onClick={() => useTask.delete_tag(task, tag, father)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
-                                    <span className="sr-only">Remove</span>
-                                    <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 stroke-gray-700/50 group-hover:stroke-gray-700/75">
-                                        <path d="M4 4l6 6m0-6l-6 6" />
-                                    </svg>
-                                    <span className="absolute -inset-1" />
-                                </button>
-                            </span>
-                        </div>
-                    ))} */}
-                    <div className='flex gap-1'>
-                        {task.tags.map((tag, i) => (
-                            <div key={i}>
-                                {tags_imgs[tag] ? (
-                                    <div>
-                                        <img className='h-9 w-9 object-cover rounded-md ml-2 cursor-pointer hover:opacity-50' src={tags_imgs[tag]} alt="tag image" onClick={() => useTask.delete_tag(task, tag, father)}/>
-                                    </div>
-                                ) : (
-                                    <div className='flex gap-1 ml-2'>
-                                        <span className="inline-flex items-center gap-x-0.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
-                                            {tag}
-                                            <button onClick={() => useTask.delete_tag(task, tag, father)} type="button" className="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
-                                                <span className="sr-only">Remove</span>
-                                                <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 stroke-gray-700/50 group-hover:stroke-gray-700/75">
-                                                    <path d="M4 4l6 6m0-6l-6 6" />
-                                                </svg>
-                                                <span className="absolute -inset-1" />
-                                            </button>
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                        
                     </div>
                 </div>
             </div>
