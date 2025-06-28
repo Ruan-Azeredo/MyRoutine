@@ -9,9 +9,10 @@ import AddTaskInput from "../components/AddTaskInput";
 import { login } from "../store/reducers/auth";
 import { TaskInterface } from "../types/task";
 import useTasksData from "../hooks/useTasksData";
-import { LoaderCircleIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon, LoaderCircleIcon, TagIcon } from "lucide-react";
 import Filters from "../components/Filters";
 import useFilter from "../hooks/useFilter";
+import AddTag from "../components/AddTag";
 
 export default function Home() {
 
@@ -120,6 +121,19 @@ export default function Home() {
 									useTask.update_task(newTask, currentTask.father)
 								}}>Salvar</button>
 								<AddTaskInput father={currentTask?.task} tags={currentTask?.task.tags}/>
+								<div className='flex mt-2'>
+									<div className={``}>
+										<AddTag task={currentTask?.task} father={currentTask?.father}/>
+									</div>
+									<div className='flex flex-col h-initial'>
+										<button onClick={() => useTask.sum_priority(currentTask?.task, currentTask?.father)} className='bg-gray-900 text-gray-100 ml-2 rounded-t-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
+											<ChevronUpIcon className={`w-4 h-4`}/>
+										</button>
+										<button onClick={() => useTask.subtract_priority(currentTask?.task, currentTask?.father)} className='bg-gray-900 text-gray-100 ml-2 rounded-b-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
+											<ChevronDownIcon className={`w-4 h-4`}/>
+										</button>
+									</div>
+								</div>
 							</div>
 							<button className="h-fit" onClick={() => setCurrentTask(null)}>x</button>
 						</div>
