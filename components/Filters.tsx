@@ -42,9 +42,9 @@ export default function Filters(){
 
     return (
         <div className="flex w-full py-2 gap-2">
-            <button className={`${filter.notChecked ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} md:py-2 py-1 md:px-4 px-2 rounded-md text-xs`} onClick={() => filter.setNotChecked(!filter.notChecked)}>Not Checked</button>
+            <button className={`${filter.notChecked ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} md:py-2 py-1 md:px-4 px-2 rounded-md text-xs text-nowrap`} onClick={() => filter.setNotChecked(!filter.notChecked)}>Not Checked</button>
 
-            <button className={`${filter.priorityOrder ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} md:py-2 py-1 md:px-4 px-2 rounded-md text-xs`} onClick={() => filter.setPriorityOrder((p) => !p)}>Priority Order</button>
+            <button className={`${filter.priorityOrder ? 'bg-gray-900' : 'text-gray-900 border-[1px] border-gray-900'} md:py-2 py-1 md:px-4 px-2 rounded-md text-xs text-nowrap`} onClick={() => filter.setPriorityOrder((p) => !p)}>Priority Order</button>
             <div className="flex md:flex-row flex-col">
                 <select value='Tag' className="rounded-md border-gray-900 text-gray-900 text-xs max-w-[76px]" name="Tags" onChange={(e) => {
                         filter.setTags([...filter.tags, e.target.value])
