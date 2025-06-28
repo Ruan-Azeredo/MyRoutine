@@ -26,6 +26,7 @@ export default function Home() {
 	const [currentTask, setCurrentTask] = useState<{task: TaskInterface, father: TaskInterface | null} | null>(null)
 	const [newTask, setNewTask] = useState<TaskInterface | null>(null)
 	const [tasksLoaded, setTasksLoaded] = useState(0)
+	const [openTag, setOpenTag] = useState(true)
 
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
@@ -48,13 +49,13 @@ export default function Home() {
 	const filter = useFilter()
 
 	useEffect(() => {
-        if (tasksLoaded === 1 && tasks.length > 0) {
+        if (tasksLoaded >= 1) {
 			console.log('tasksLoaded', tasksLoaded, tasks)
             const updatedTasks = filter.filterTaskArray(tasks)
             dispatch(filterDisplayTasks(updatedTasks))
             console.log(updatedTasks, displayTasks)
         }
-    }, [tasks, filter.notChecked, filter.priorityOrder, filter.tags, filter.priority])
+    }, [tasks, currentTask, filter.notChecked, filter.priorityOrder, filter.tags, filter.priority])
 
 	useEffect(() => {
 		setNewTask(currentTask?.task)
@@ -63,7 +64,7 @@ export default function Home() {
 	return isAuthenticated ? (
 		<div className="mx-auto min-h-screen flex w-full">
 			{/* <div className="flex min-h-screen "> */}
-				<div className="bg-white min-h-full m-1 md:m-4 w-full rounded-xl p-4 flex gap-4">
+				<div className="bg-white min-h-full m-1 md:m-4 w-full rounded-xl p-2 md:p-4 flex gap-4">
 					<LoaderCircleIcon className={`h-5 w-5 right-8 text-gray-900 animate-spin ${useTask.loading ? 'fixed' : 'hidden'}`}/>
 
 					<main className={`flex-1 ${currentTask?.task.title ? 'hidden md:block' : ''}`}>
@@ -102,10 +103,15 @@ export default function Home() {
 							</label>
 							<AddTaskInput />
 
-							<Filters/>
+							<div className="flex justify-between flex-wrap md:flex-nowrap">
+								<Filters/>
+								<button onClick={() => setOpenTag(!openTag)} className="bg-gray-900 text-gray-100 rounded-md px-2 py-1 mt-0 md:mt-2 mb-2 ml-auto text-xs text-nowrap">
+									{openTag ? 'Hide tags' : 'Show tags'}
+								</button>
+							</div>
 							{displayTasks?.map((task, index) => (
 								<div key={index}>
-									<Task setCurrentTask={setCurrentTask} task={task}/>
+									<Task setCurrentTask={setCurrentTask} task={task} openTag={openTag}/>
 								</div>
 							))}
 						</div>
@@ -121,10 +127,20 @@ export default function Home() {
 										<AddTag task={currentTask?.task} father={currentTask?.father}/>
 									</div>
 									<div className='flex flex-col h-initial ml-auto'>
-										<button onClick={() => useTask.sum_priority(currentTask?.task, currentTask?.father)} className='bg-gray-900 text-gray-100 ml-2 rounded-t-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
+										<button onClick={async () => {
+											await useTask.sum_priority(currentTask?.task, currentTask?.father)
+											.then(() => {
+												setCurrentTask({task: {...currentTask?.task, priority: currentTask?.task.priority + 1}, father: currentTask?.father})
+											})
+										}} className='bg-gray-900 text-gray-100 ml-2 rounded-t-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
 											<ChevronUpIcon className={`w-4 h-4`}/>
 										</button>
-										<button onClick={() => useTask.subtract_priority(currentTask?.task, currentTask?.father)} className='bg-gray-900 text-gray-100 ml-2 rounded-b-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
+										<button onClick={async () => {
+											await useTask.subtract_priority(currentTask?.task, currentTask?.father)
+											.then(() => {
+												setCurrentTask({task: {...currentTask?.task, priority: currentTask?.task.priority - 1}, father: currentTask?.father})
+											})
+										}} className='bg-gray-900 text-gray-100 ml-2 rounded-b-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
 											<ChevronDownIcon className={`w-4 h-4`}/>
 										</button>
 									</div>

@@ -8,12 +8,10 @@ import AddTaskInput from './AddTaskInput'
 import { ChevronDown, ChevronDownIcon, ChevronsDownIcon, ChevronsUpIcon, ChevronUp, ChevronUpIcon, EllipsisVerticalIcon, EqualIcon, MinusIcon, PlusIcon, TagIcon, Trash2Icon } from 'lucide-react'
 import { tags_imgs, tags_list } from '../consts/tags'
 
-const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentTask: React.Dispatch<SetStateAction<{task: TaskInterface, father: TaskInterface}>>, father?: TaskInterface}) => {
+const Task = ({task, setCurrentTask, father, openTag} : {task: TaskInterface, setCurrentTask: React.Dispatch<SetStateAction<{task: TaskInterface, father: TaskInterface}>>, father?: TaskInterface, openTag?: boolean}) => {
 
     const useTask = useTasksData()
 
-    const [newTag, setNewTag] = useState("")
-    const [showAddTagInput, setShowAddTagInput] = useState(false)
     const [showChildren, setShowChildren] = useState(false)
     const [showDescription, setShowDescription] = useState(false)
     const [newTask, setNewTask] = useState<TaskInterface>()
@@ -24,8 +22,8 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
 
     }, [task])
 
-    const PriorityIcon = (() => {
-        switch (task.priority) {
+    const PriorityIcon = ({priority}: {priority: number}) => {
+        switch (priority) {
             case 5:
                 return <ChevronsUpIcon className={`w-4 h-4 text-red-500`} />
             case 4:
@@ -39,7 +37,7 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
             default:
                 return null
         }
-    })();
+    };
 
     return (
         <div className={`mb-2 ${task.completed ? 'opacity-25' : ''}`}>
@@ -60,13 +58,13 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                         </div>
                     ))} */}
                     <div className="relative w-full">
-                        <div className="flex gap-1 absolute -top-1 right-0 mr-6">
+                        <div className={`flex md:gap-1 absolute -top-[6px] md:-top-1 right-0 mr-1 md:mr-6 ${openTag ? 'block' : 'hidden'}`}>
                             {task.tags.map((tag, i) => (
                                 <div key={i}>
                                     {tags_list.find(t => t.name.toLowerCase() === tag.toLowerCase()) ? (
-                                        <div style={{backgroundColor: tags_list.find(t => t.name.toLowerCase() === tag.toLowerCase())?.color}} className={`flex gap-1 px-1 pt-[1px] pb-[1px]  rounded-[4px] items-center ${task.tags.length > 1 ? 'ml-2' : ''}`}>
+                                        <div style={{backgroundColor: tags_list.find(t => t.name.toLowerCase() === tag.toLowerCase())?.color}} className={`flex gap-1 px-[2px] md:px-1 pt-[1px] pb-[1px] rounded-[4px] items-center ${task.tags.length > 1 ? 'ml-2' : ''}`}>
                                             <img className='h-3 w-3 object-cover rounded-md cursor-pointer hover:opacity-50' src={tags_list.find(t => t.name.toLowerCase() === tag.toLowerCase())?.image} alt="tag image" onClick={() => useTask.delete_tag(task, tag, father)}/>
-                                            <span className='text-[10px] text-gray-100'>{tag}</span>
+                                            <span className='text-[10px] text-gray-100 hidden md:block'>{tag}</span>
                                         </div>
                                     ) : (
                                         <div className='flex gap-1 ml-2'>
@@ -91,7 +89,13 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                     <div className='flex md:flex-row flex-col w-full'>
                         <div className='flex w-full'>
                            
-                            <div className="shadow-sm ring-1 ring-inset ring-gray-300 rounded-md flex justify-between w-full h-fit md:py-2">
+                            <div className={`${openTag ? 'hidden' : 'flex rounded-l-md'} overflow-hidden`}>
+                                {task.tags.map((tag, i) => (
+                                    <div key={i} className={`h-full w-2 ${i > 0 ? 'ml-1' : ''}`} style={{backgroundColor: tags_list.find(t => t.name.toLowerCase() === tag.toLowerCase())?.color}}>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className={`shadow-sm ring-1 ring-inset ring-gray-300 rounded-md flex justify-between w-full h-fit py-1 md:py-2 ${openTag ? '' : 'rounded-l-none'}`}>
                                 <input
                                     id="select-all"
                                     name="select-all"
@@ -140,7 +144,7 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                                 </div>
                                 <div className='flex mr-4 gap-2'>
                                     <div className='my-auto'>
-                                        {PriorityIcon}
+                                        <PriorityIcon priority={task.priority}/>
                                     </div>
                                     <button onClick={() => useTask.delete_task(task, father)} className="my-auto"><Trash2Icon className='h-[14px] w-[14px]'/></button>
                                     <button onClick={() => {
@@ -157,9 +161,6 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className={showAddTagInput ? '' : 'hidden'}>
-                        
                     </div>
                 </div>
             </div>

@@ -79,14 +79,14 @@ const useTasksData = () => {
         }
     };
 
-    const add_tag = (task: TaskInterface, tag: string, father?: TaskInterface) => {
+    const add_tag = async (task: TaskInterface, tag: string, father?: TaskInterface) => {
         const updatedTask = { ...task, tags: [...(task.tags || []), tag] };
-        update_task(updatedTask, father);
+        await update_task(updatedTask, father);
     };
 
-    const delete_tag = (task: TaskInterface, tag: string, father?: TaskInterface) => {
+    const delete_tag = async (task: TaskInterface, tag: string, father?: TaskInterface) => {
         const updatedTask = { ...task, tags: (task.tags || []).filter(t => t !== tag) };
-        update_task(updatedTask, father);
+        await update_task(updatedTask, father);
     };
 
     const toggle_task = (task: TaskInterface, father?: TaskInterface) => {
@@ -94,13 +94,13 @@ const useTasksData = () => {
         update_task(updatedTask, father);
     };
 
-    const sum_priority = (task: TaskInterface, father?: TaskInterface) => {
+    const sum_priority = async (task: TaskInterface, father?: TaskInterface) => {
         if(task.priority >= 5) return
         const updatedTask = { ...task, priority: (task.priority ?? 0) + 1 };
         update_task(updatedTask, father);
     };
 
-    const subtract_priority = (task: TaskInterface, father?: TaskInterface) => {
+    const subtract_priority = async (task: TaskInterface, father?: TaskInterface) => {
         if(task.priority <= 0 || task.priority == null) return
         const updatedTask = { ...task, priority: (task.priority ?? 0) - 1 };
         update_task(updatedTask, father);
