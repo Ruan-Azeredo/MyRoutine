@@ -18,7 +18,7 @@ const AddTag = ({task, father}: {task: TaskInterface, father: TaskInterface}) =>
             <button
                 type="button"
                 className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold bg-gray-900 text-gray-100 ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:text-gray-900"
-                onClick={() => useTask.add_tag(task, newTag, father)}
+                onClick={async () => await useTask.add_tag(task, newTag, father)}
             >+</button>
         </div>
     )
