@@ -66,7 +66,7 @@ export default function Home() {
 				<div className="bg-white min-h-full m-1 md:m-4 w-full rounded-xl p-4 flex gap-4">
 					<LoaderCircleIcon className={`h-5 w-5 right-8 text-gray-900 animate-spin ${useTask.loading ? 'fixed' : 'hidden'}`}/>
 
-					<main className="flex-1">
+					<main className={`flex-1 ${currentTask?.task.title ? 'hidden md:block' : ''}`}>
 						<div className="w-full ml-auto">
 							<div className="mb-4 hidden md:block">
 								<label htmlFor="search" className="block text-sm font-medium leading-6 text-gray-900">
@@ -112,20 +112,15 @@ export default function Home() {
 				
 					</main>
 
-					<aside className={`${currentTask?.task.title ? 'hidden w-0 md:sticky md:top-0 md:w-1/3 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
+					<aside className={`${currentTask?.task.title ? 'md:sticky md:top-0 w-full md:w-1/3 lg:block' : 'hidden'} top-8 shrink-0 text-black `}>
 						<div className="flex">
 							<div className="w-full">
-								<input onChange={(e) => setNewTask({...newTask , title: e.target.value})} className="border-none rounded-md w-full font-bold text-xl" type="text" value={newTask?.title || currentTask?.task.title}/>
-								<textarea onChange={(e) => setNewTask({...newTask , description: e.target.value})} className="border-none rounded-md w-full text-sm mt-8" value={newTask?.description || currentTask?.task.description || ""} />
-									<button className="border-[1px] px-4 py-2 rounded-md border-gray-900 mt-8" onClick={() => {
-									useTask.update_task(newTask, currentTask.father)
-								}}>Salvar</button>
-								<AddTaskInput father={currentTask?.task} tags={currentTask?.task.tags}/>
+								<input onChange={(e) => setNewTask({...newTask , title: e.target.value})} className="border-none rounded-md w-full font-bold text-md md:text-xl" type="text" value={newTask?.title || currentTask?.task.title}/>
 								<div className='flex mt-2'>
 									<div className={``}>
 										<AddTag task={currentTask?.task} father={currentTask?.father}/>
 									</div>
-									<div className='flex flex-col h-initial'>
+									<div className='flex flex-col h-initial ml-auto'>
 										<button onClick={() => useTask.sum_priority(currentTask?.task, currentTask?.father)} className='bg-gray-900 text-gray-100 ml-2 rounded-t-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
 											<ChevronUpIcon className={`w-4 h-4`}/>
 										</button>
@@ -134,6 +129,11 @@ export default function Home() {
 										</button>
 									</div>
 								</div>
+								<textarea onChange={(e) => setNewTask({...newTask , description: e.target.value})} className="border-1 h-48 rounded-md w-full text-sm mt-8" value={newTask?.description || currentTask?.task.description || ""} />
+									<button className="border-[1px] text-sm px-4 py-1 rounded-md border-gray-900 mt-2 mb-4" onClick={() => {
+									useTask.update_task(newTask, currentTask.father)
+								}}>Salvar</button>
+								<AddTaskInput father={currentTask?.task} tags={currentTask?.task.tags}/>
 							</div>
 							<button className="h-fit" onClick={() => setCurrentTask(null)}>x</button>
 						</div>

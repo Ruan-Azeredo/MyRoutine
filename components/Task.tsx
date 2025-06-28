@@ -21,7 +21,6 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
 
     useEffect(() => {
         setNewTask(task)
-        setCurrentTask({task, father})
 
     }, [task])
 
