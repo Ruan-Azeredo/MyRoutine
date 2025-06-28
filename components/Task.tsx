@@ -91,9 +91,7 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                 <div className='w-full'>
                     <div className='flex md:flex-row flex-col w-full'>
                         <div className='flex w-full'>
-                            <div>
-                                <button onClick={() => setShowAddTagInput(!showAddTagInput)} className={`${showAddTagInput ? 'bg-gray-100 text-gray-900' : 'bg-gray-900 text-gray-100'} h-full px-1 rounded-l-md`}>+</button>
-                            </div>
+                           
                             <div className="shadow-sm ring-1 ring-inset ring-gray-300 rounded-md flex justify-between w-full h-fit md:py-2">
                                 <input
                                     id="select-all"
@@ -158,27 +156,6 @@ const Task = ({task, setCurrentTask, father} : {task: TaskInterface, setCurrentT
                                     </button>
                                     <button onClick={() => setCurrentTask({task, father})}><EllipsisVerticalIcon className='w-4 h-4'/></button>
                                 </div>
-                            </div>
-                        </div>
-                        <div className={showAddTagInput ? 'flex mt-2 md:mt-0' : 'hidden'}>
-                            <div className={`ml-2 relative flex flex-grow items-stretch focus-within:z-10`}>
-                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <TagIcon className='w-4 h-4' />
-                                </div>
-                                <input onChange={(e) => setNewTag(e.target.value)} type="text" placeholder='tag' className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
-                                <button
-                                    type="button"
-                                    className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold bg-gray-900 text-gray-100 ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:text-gray-900"
-                                    onClick={() => useTask.add_tag(task, newTag, father)}
-                                >+</button>
-                            </div>
-                            <div className='flex flex-col h-full'>
-                                <button onClick={() => useTask.sum_priority(task, father)} className='bg-gray-900 text-gray-100 ml-2 rounded-t-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
-                                    <ChevronUpIcon className={`w-4 h-4`}/>
-                                </button>
-                                <button onClick={() => useTask.subtract_priority(task, father)} className='bg-gray-900 text-gray-100 ml-2 rounded-b-md flex items-center px-2 hover:bg-gray-100 hover:text-gray-900 h-full'>
-                                    <ChevronDownIcon className={`w-4 h-4`}/>
-                                </button>
                             </div>
                         </div>
                     </div>
