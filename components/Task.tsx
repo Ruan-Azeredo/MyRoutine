@@ -166,7 +166,7 @@ const Task = ({task, setCurrentTask, father, openTag} : {task: TaskInterface, se
             </div>
             {showChildren && task.child?.map((child, item) => (
                 <div className='ml-4 md:ml-16 mt-2' key={item}>
-                    <Task setCurrentTask={setCurrentTask} task={child} father={task}/>
+                    <Task setCurrentTask={setCurrentTask} task={child} father={task} openTag={openTag}/>
                 </div>
             ))}
         </div>
