@@ -95,7 +95,7 @@ const Task = ({task, setCurrentTask, father, openTag} : {task: TaskInterface, se
                                     </div>
                                 ))}
                             </div>
-                            <div className={`shadow-sm ring-1 ring-inset ring-gray-300 rounded-md flex justify-between w-full h-fit py-1 md:py-2 ${openTag ? '' : 'rounded-l-none'}`}>
+                            <div className={`shadow-sm ring-1 ring-inset ring-gray-300 rounded-md flex justify-between w-full h-fit py-1 md:py-2 ${!openTag && task.tags.length > 0 ? 'rounded-l-none' : ''}`}>
                                 <input
                                     id="select-all"
                                     name="select-all"
