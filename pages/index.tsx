@@ -153,7 +153,7 @@ export default function Home() {
 										onClick={async () => {
 											setIsSaving(true);
 											await useTask.update_task(newTask, currentTask.father);
-											setTimeout(() => setIsSaving(false), 75); // keep the animation for 200ms
+											setTimeout(() => setIsSaving(false), 75);
 										}}
 									>
 										Salvar
