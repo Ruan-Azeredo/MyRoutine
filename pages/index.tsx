@@ -31,6 +31,8 @@ export default function Home() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 
+	const [isSaving, setIsSaving] = useState(false)
+
 	useEffect(() => {
 		const fetchTasks = async () => {
 			try {
@@ -146,9 +148,16 @@ export default function Home() {
 									</div>
 								</div>
 								<textarea onChange={(e) => setNewTask({...newTask , description: e.target.value})} className="border-1 h-48 rounded-md w-full text-sm mt-8" value={newTask?.description || currentTask?.task.description || ""} />
-									<button className="border-[1px] text-sm px-4 py-1 rounded-md border-gray-900 mt-2 mb-4" onClick={() => {
-									useTask.update_task(newTask, currentTask.father)
-								}}>Salvar</button>
+									<button
+										className={`border-[1px] text-sm px-4 py-1 rounded-md border-gray-900 mt-2 mb-4 transition-transform duration-200 ${isSaving ? 'scale-95' : 'scale-100'}`}
+										onClick={async () => {
+											setIsSaving(true);
+											await useTask.update_task(newTask, currentTask.father);
+											setTimeout(() => setIsSaving(false), 75); // keep the animation for 200ms
+										}}
+									>
+										Salvar
+									</button>
 								<AddTaskInput father={currentTask?.task} tags={currentTask?.task.tags}/>
 							</div>
 							<button className="h-fit" onClick={() => setCurrentTask(null)}>x</button>
